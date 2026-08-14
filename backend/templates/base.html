@@ -66,9 +66,13 @@
             </nav>
 
             <div class="sidebar-footer">
-                <span class="sidebar-user">
+                <a
+                    class="sidebar-user"
+                    href="{{ url_for('profile.view_profile') }}"
+                    title="View profile"
+                >
                     {{ current_user.full_name }}
-                </span>
+                </a>
 
                 <form action="{{ url_for('auth.logout') }}" method="POST">
                     <input

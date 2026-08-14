@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify
 from sqlalchemy import text
 from sqlalchemy.engine import URL
+from auth import auth_bp
+from main import main_bp
+from profile_routes import profile_bp
 
 from extensions import csrf, db, login_manager
 
@@ -43,6 +46,8 @@ def create_app():
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
+    app.register_blueprint(profile_bp)
+        
 
     @app.get("/api/health")
     def health():
