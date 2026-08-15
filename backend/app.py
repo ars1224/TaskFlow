@@ -7,6 +7,7 @@ from sqlalchemy.engine import URL
 from auth import auth_bp
 from main import main_bp
 from profile_routes import profile_bp
+from datetime import timedelta
 
 from extensions import csrf, db, login_manager
 
@@ -31,6 +32,14 @@ def create_app():
     )
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=8)
+
+    app.config["REMEMBER_COOKIE_HTTPONLY"] = True
+    app.config["REMEMBER_COOKIE_SAMESITE"] = "Lax"
+    app.config["REMEMBER_COOKIE_DURATION"] = timedelta(days=7)
 
     db.init_app(app)
     csrf.init_app(app)

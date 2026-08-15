@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
@@ -47,9 +47,10 @@ def register():
                     db.session.rollback()
                     flash("An account with that email already exists.", "danger")
                 else:
-                    login_user(user)
                     flash("Your TaskFlow account has been created.", "success")
-                    return redirect(url_for("main.dashboard"))
+                    return redirect(url_for("auth.login"))
+
+                
 
     return render_template("auth/register.html")
 
@@ -72,15 +73,19 @@ def login():
             flash("Incorrect email or password.", "danger")
         else:
             login_user(user, remember=remember)
+            session.permanent = True
             flash("Welcome back!", "success")
             return redirect(url_for("main.dashboard"))
 
     return render_template("auth/login.html")
 
 
+
 @auth_bp.post("/logout")
 @login_required
 def logout():
     logout_user()
+    session.clear()
+
     flash("You have been logged out.", "info")
     return redirect(url_for("auth.login"))

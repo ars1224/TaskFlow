@@ -1,2 +1,2 @@
-CREATE USER taskflow_user 
-ALTER DATABASE taskflow_db OWNER TO taskflow_user;
+SELECT id, full_name, email, password_hash
+FROM public.users;
