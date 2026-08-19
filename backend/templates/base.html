@@ -47,17 +47,20 @@
 
             <nav class="sidebar-navigation" aria-label="Main navigation">
                 <a
-                    class="sidebar-link active"
+                    class="sidebar-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}"
                     href="{{ url_for('main.dashboard') }}"
                 >
                     <i class="bi bi-house-door"></i>
                     <span>Dashboard</span>
                 </a>
 
-                <span class="sidebar-link disabled-link">
+                <a
+                    class="sidebar-link {% if request.endpoint and request.endpoint.startswith('tasks.') %}active{% endif %}"
+                    href="{{ url_for('tasks.list_tasks') }}"
+                >
                     <i class="bi bi-list-task"></i>
                     <span>Task List</span>
-                </span>
+                </a>
 
                 <span class="sidebar-link disabled-link">
                     <i class="bi bi-clock"></i>

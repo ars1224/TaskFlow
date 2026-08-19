@@ -1,7 +1,252 @@
 {% extends "base.html" %}
 
-{% block title %}Register | TaskFlow{% endblock %}
+{% block title %}Dashboard | TaskFlow{% endblock %}
 
 {% block content %}
+<main class="dashboard">
 
+    <header class="dashboard-header">
+        <div>
+            <h1>Hi {{ current_user.full_name.split()[0] }}!</h1>
+            <p>Today is {{ today.strftime("%A, %d %B %Y") }}</p>
+        </div>
+
+        <a
+            href="{{ url_for('tasks.list_tasks', create=1) }}"
+            class="primary-button create-task-button"
+        >
+            Create Task
+        </a>
+    </header>
+
+    <section class="status-grid" aria-label="Task summary">
+
+        <article class="status-card yet-to-do">
+            <h2>Yet-to-do</h2>
+            <strong>{{ counts.yet_to_do }}</strong>
+        </article>
+
+        <article class="status-card ongoing">
+            <h2>On-going</h2>
+            <strong>{{ counts.on_going }}</strong>
+        </article>
+
+        <article class="status-card finished">
+            <h2>Completed</h2>
+            <strong>{{ counts.completed }}</strong>
+        </article>
+
+        <article class="status-card dropped">
+            <h2>Dropped</h2>
+            <strong>{{ counts.dropped }}</strong>
+        </article>
+
+    </section>
+
+    <section class="dashboard-progress">
+        <div class="progress-heading">
+            <div>
+                <h2>Daily Progress</h2>
+
+                <p>
+                    {{ completed_today }} of {{ today_tasks|length }}
+                    task{% if today_tasks|length != 1 %}s{% endif %}
+                    completed
+                </p>
+            </div>
+
+            <strong>{{ daily_progress }}%</strong>
+        </div>
+
+        <div
+            class="dashboard-progress-track"
+            role="progressbar"
+            aria-valuenow="{{ daily_progress }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+        >
+            <div
+                class="dashboard-progress-fill"
+                data-progress="{{ daily_progress }}"
+            ></div>
+        </div>
+
+        <div class="dashboard-extra-counts">
+            <span>
+                Pending: <strong>{{ counts.pending }}</strong>
+            </span>
+
+            <span>
+                Overdue: <strong>{{ counts.overdue }}</strong>
+            </span>
+        </div>
+    </section>
+
+    <section class="today-section">
+
+        <div class="dashboard-section-heading">
+            <h2>Your Tasks Today</h2>
+
+            <a href="{{ url_for('tasks.list_tasks') }}">
+                View all tasks
+            </a>
+        </div>
+
+        {% if today_tasks %}
+
+            <div class="task-list">
+
+                {% for task in today_tasks %}
+    <article class="task-row">
+
+        <div class="task-main">
+
+            <div
+                class="task-status-dot
+                {% if task.status|lower == 'completed' %}
+                    status-completed
+                {% elif task.status|lower == 'on-going' %}
+                    status-on-going
+                {% elif task.status|lower == 'dropped' %}
+                    status-dropped
+                {% endif %}"
+            ></div>
+
+            <div>
+                <button
+                    type="button"
+                    class="task-title-button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#taskDetailsModal{{ task.id }}"
+                >
+                    {{ task.title }}
+                </button>
+
+                {% if task.description %}
+                    <p>{{ task.description }}</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <span class="priority-badge priority-{{ task.priority|lower }}">
+            {{ task.priority|title }}
+        </span>
+
+        <span class="status-label">
+            {{ task.status|replace("-", " ")|title }}
+        </span>
+
+    </article>
+
+    <div
+        class="modal fade"
+        id="taskDetailsModal{{ task.id }}"
+        tabindex="-1"
+        aria-labelledby="taskDetailsModalLabel{{ task.id }}"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered task-details-modal">
+            <div class="modal-content">
+
+                <div class="task-row-actions">
+
+                    <span class="status-label">
+                        {% if task.status == "completed" %}
+                            Finished
+                        {% else %}
+                            {{ task.status|replace("-", " ")|title }}
+                        {% endif %}
+                    </span>
+
+                    <button
+                        type="button"
+                        class="task-action-button delete-action-button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteTaskModal{{ task.id }}"
+                        aria-label="Delete {{ task.title }}"
+                    >
+                        <i class="bi bi-trash3"></i>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="task-action-button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editTaskModal{{ task.id }}"
+                        aria-label="Edit {{ task.title }}"
+                    >
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+
+                </div>
+
+                <h2
+                    class="task-details-number"
+                    id="taskDetailsModalLabel{{ task.id }}"
+                >
+                    Task #{{ "%05d"|format(task.id) }}
+                </h2>
+
+                <div class="task-details-field">
+                    <label>Task Name:</label>
+                    <div class="task-details-value">
+                        {{ task.title }}
+                    </div>
+                </div>
+
+                <div class="task-details-field">
+                    <label>Task Description:</label>
+
+                    <div class="task-details-value task-description-value">
+                        {{ task.description or "No description provided." }}
+                    </div>
+                </div>
+
+                <div class="task-details-field">
+                    <label>Priority:</label>
+                    <div class="task-details-value">
+                        {{ task.priority|title }}
+                    </div>
+                </div>
+
+                <div class="task-details-field">
+                    <label>Due Date:</label>
+                    <div class="task-details-value">
+                        {{ task.due_date.strftime("%d %B %Y") }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {% include "tasks/_edit_modal.html" %}
+    {% include "tasks/_delete_modal.html" %}
+{% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-task-list">
+                <i class="bi bi-check2-circle"></i>
+
+                <h3>No tasks due today</h3>
+
+                <p>Create a task to start planning your day.</p>
+
+                <a
+                    href="{{ url_for('tasks.list_tasks', create=1) }}"
+                    class="primary-button"
+                >
+                    Create your first task
+                </a>
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
 {% endblock %}

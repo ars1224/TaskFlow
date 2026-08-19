@@ -29,3 +29,23 @@ if (menuButton && sidebar && sidebarOverlay) {
         }
     });
 }
+
+document.querySelectorAll("[data-disable-on-submit]").forEach((form) => {
+    form.addEventListener("submit", () => {
+        const submitButton = form.querySelector("button[type='submit']");
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Saving...";
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const progressBar = document.querySelector(".dashboard-progress-fill");
+
+    if (progressBar) {
+        const progress = progressBar.dataset.progress || 0;
+        progressBar.style.width = `${progress}%`;
+    }
+});

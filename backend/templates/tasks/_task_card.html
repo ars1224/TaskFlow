@@ -1,0 +1,84 @@
+<article class="task-card task-card-{{ task.status }}">
+
+    <div class="task-card-status">
+        {% if task.status == "completed" %}
+            Finished
+        {% else %}
+            {{ task.status|replace("-", " ")|title }}
+        {% endif %}
+    </div>
+
+    <span class="priority-badge priority-{{ task.priority }}">
+        {{ task.priority|title }}
+    </span>
+
+    <div class="task-card-main">
+
+        <span
+            class="task-check-circle
+            {% if task.status == 'completed' %}
+                is-completed
+            {% endif %}"
+            aria-hidden="true"
+        >
+            {% if task.status == "completed" %}
+                <i class="bi bi-check-lg"></i>
+            {% endif %}
+        </span>
+
+        <div class="task-card-information">
+
+            <button
+                type="button"
+                class="task-title-button"
+                data-bs-toggle="modal"
+                data-bs-target="#taskDetailsModal{{ task.id }}"
+            >
+                {{ task.title }}
+            </button>
+
+            {% if task.description %}
+                <p>{{ task.description }}</p>
+            {% else %}
+                <p class="task-no-description">
+                    No description
+                </p>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="task-card-due-date">
+        <span>Due Date</span>
+
+        <strong>
+            {{ task.due_date.strftime("%d %b %Y") }}
+        </strong>
+    </div>
+
+    <div class="task-card-actions">
+
+        <button
+            type="button"
+            class="task-card-action edit-action"
+            data-bs-toggle="modal"
+            data-bs-target="#editTaskModal{{ task.id }}"
+            aria-label="Edit {{ task.title }}"
+        >
+            <i class="bi bi-pencil-square"></i>
+        </button>
+
+        <button
+            type="button"
+            class="task-card-action delete-action"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteTaskModal{{ task.id }}"
+            aria-label="Delete {{ task.title }}"
+        >
+            <i class="bi bi-trash3"></i>
+        </button>
+
+    </div>
+
+</article>
