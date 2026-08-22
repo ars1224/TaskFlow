@@ -64,6 +64,12 @@ class Task(db.Model):
         nullable=True,
     )
 
+    scheduled_date = db.Column(
+    db.Date,
+    nullable=False,
+    index=True,
+    )
+
     due_date = db.Column(
         db.Date,
         nullable=False,

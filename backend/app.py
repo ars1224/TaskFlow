@@ -11,7 +11,7 @@ from datetime import timedelta
 from task_routes import task_bp
 
 
-from extensions import csrf, db, login_manager
+from extensions import csrf, db, login_manager, migrate
 
 load_dotenv()
 
@@ -44,8 +44,9 @@ def create_app():
     app.config["REMEMBER_COOKIE_DURATION"] = timedelta(days=7)
 
     db.init_app(app)
-    csrf.init_app(app)
     login_manager.init_app(app)
+    csrf.init_app(app)
+    migrate.init_app(app, db)
 
     login_manager.login_view = "auth.login"
     login_manager.login_message = "Please log in to access that page."

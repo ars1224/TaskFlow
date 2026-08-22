@@ -19,6 +19,12 @@
                     value="{{ csrf_token() }}"
                 >
 
+                <input
+                    type="hidden"
+                    name="return_to"
+                    value="{% if request.endpoint == 'main.dashboard' %}dashboard{% else %}task_list{% endif %}"
+                >
+
                 <div class="task-details-top">
 
                     <span class="task-details-status status-{{ task.status }}">
@@ -97,8 +103,31 @@
                 </div>
 
                 <div class="form-field">
+                    <label for="edit-scheduled-date-{{ task.id }}">
+                        When will you do this task?
+                    </label>
+
+                    <input
+                        id="edit-scheduled-date-{{ task.id }}"
+                        type="date"
+                        name="scheduled_date"
+                        value="{{ task.scheduled_date.isoformat() }}"
+                        min="{{ today.isoformat() }}"
+                        data-scheduled-date
+                        data-today="{{ today.isoformat() }}"
+                        required
+                    >
+
+                    <div
+                        class="modal-field-error"
+                        data-date-error
+                        role="alert"
+                    ></div>
+                </div>
+
+                <div class="form-field">
                     <label for="edit-due-date-{{ task.id }}">
-                        Due Date:
+                        Due Date
                     </label>
 
                     <input
@@ -106,6 +135,7 @@
                         type="date"
                         name="due_date"
                         value="{{ task.due_date.isoformat() }}"
+                        data-due-date
                         required
                     >
                 </div>

@@ -37,8 +37,18 @@ def dashboard():
 
     today_tasks = [
         task for task in tasks
-        if task.due_date == today
+        if task.scheduled_date == today
     ]
+
+    status_changed = False
+
+    for task in today_tasks:
+        if task.status == "yet-to-do":
+            task.status = "on-going"
+            status_changed = True
+
+    if status_changed:
+        db.session.commit()
 
     def task_status(task):
         return task.status.strip().lower()
@@ -66,14 +76,25 @@ def dashboard():
         for task in tasks
     )
 
+    # Dropped tasks should not count toward daily progress
+    active_today_tasks = [
+        task
+        for task in today_tasks
+        if task_status(task) != "dropped"
+    ]
+
     completed_today = sum(
         task_status(task) == "completed"
-        for task in today_tasks
+        for task in active_today_tasks
     )
 
+    total_today = len(active_today_tasks)
+
     daily_progress = (
-        round((completed_today / len(today_tasks)) * 100)
-        if today_tasks
+        round(
+            (completed_today / total_today) * 100
+        )
+        if total_today
         else 0
     )
 
@@ -85,12 +106,15 @@ def dashboard():
         "pending": yet_to_do + on_going,
         "overdue": overdue,
     }
-
+    
     return render_template(
         "dashboard.html",
         today=today,
         today_tasks=today_tasks,
         completed_today=completed_today,
+        total_today=total_today,
         daily_progress=daily_progress,
         counts=counts,
+        form_data={},
+        open_create_modal=False,
     )

@@ -6,6 +6,7 @@
     aria-hidden="true"
 >
     <div class="modal-dialog modal-dialog-centered delete-task-modal">
+
         <div class="modal-content">
 
             <div class="delete-task-icon">
@@ -13,16 +14,16 @@
             </div>
 
             <h2 id="deleteTaskModalLabel{{ task.id }}">
-                Delete Task?
+                Drop Task?
             </h2>
 
             <p>
-                Are you sure you want to delete
+                Are you sure you want to drop
                 <strong>{{ task.title }}</strong>?
             </p>
 
             <p class="delete-warning">
-                This action cannot be undone.
+                The task will be marked as dropped and kept in your history.
             </p>
 
             <form
@@ -50,12 +51,14 @@
                         type="submit"
                         class="delete-button"
                     >
-                        Delete Task
+                        Drop Task
                     </button>
 
                 </div>
+
             </form>
 
         </div>
+
     </div>
 </div>

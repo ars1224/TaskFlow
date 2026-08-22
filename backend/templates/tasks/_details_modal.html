@@ -1,0 +1,118 @@
+<div
+    class="modal fade"
+    id="taskDetailsModal{{ task.id }}"
+    tabindex="-1"
+    aria-labelledby="taskDetailsModalLabel{{ task.id }}"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered task-details-modal">
+
+        <div class="modal-content">
+
+            <!-- TOP -->
+            <div class="task-details-top">
+
+                <span
+                    class="task-details-status status-{{ task.status }}"
+                >
+                    {% if task.status == "completed" %}
+                        Finished
+                    {% else %}
+                        {{ task.status|replace("-", " ")|title }}
+                    {% endif %}
+                </span>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+
+            </div>
+
+
+            <!-- TASK NUMBER -->
+            <h2
+                class="task-details-number"
+                id="taskDetailsModalLabel{{ task.id }}"
+            >
+                Task #{{ "%05d"|format(task.id) }}
+            </h2>
+
+
+            <!-- TASK NAME -->
+            <div class="task-details-field">
+
+                <label>
+                    Task Name:
+                </label>
+
+                <div class="task-details-value">
+                    {{ task.title }}
+                </div>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+            <div class="task-details-field">
+
+                <label>
+                    Task Description:
+                </label>
+
+                <div
+                    class="task-details-value task-description-value"
+                >
+                    {{ task.description or "No description provided." }}
+                </div>
+
+            </div>
+
+
+            <!-- PRIORITY -->
+            <div class="task-details-field">
+
+                <label>
+                    Priority:
+                </label>
+
+                <div class="task-details-value">
+                    {{ task.priority|title }}
+                </div>
+
+            </div>
+
+
+            <!-- SCHEDULED DATE -->
+            <div class="task-details-field">
+
+                <label>
+                    Scheduled Date:
+                </label>
+
+                <div class="task-details-value">
+                    {{ task.scheduled_date.strftime("%d %B %Y") }}
+                </div>
+
+            </div>
+
+
+            <!-- DUE DATE -->
+            <div class="task-details-field">
+
+                <label>
+                    Due Date:
+                </label>
+
+                <div class="task-details-value">
+                    {{ task.due_date.strftime("%d %B %Y") }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

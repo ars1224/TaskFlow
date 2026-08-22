@@ -3,23 +3,37 @@
 {% block title %}Dashboard | TaskFlow{% endblock %}
 
 {% block content %}
+
 <main class="dashboard">
 
+    <!-- DASHBOARD HEADER -->
     <header class="dashboard-header">
+
         <div>
             <h1>Hi {{ current_user.full_name.split()[0] }}!</h1>
-            <p>Today is {{ today.strftime("%A, %d %B %Y") }}</p>
+
+            <p>
+                Today is {{ today.strftime("%A, %d %B %Y") }}
+            </p>
         </div>
 
-        <a
-            href="{{ url_for('tasks.list_tasks', create=1) }}"
+        <button
+            type="button"
             class="primary-button create-task-button"
+            data-bs-toggle="modal"
+            data-bs-target="#createTaskModal"
         >
             Create Task
-        </a>
+        </button>
+
     </header>
 
-    <section class="status-grid" aria-label="Task summary">
+
+    <!-- STATUS SUMMARY -->
+    <section
+        class="status-grid"
+        aria-label="Task summary"
+    >
 
         <article class="status-card yet-to-do">
             <h2>Yet-to-do</h2>
@@ -32,7 +46,7 @@
         </article>
 
         <article class="status-card finished">
-            <h2>Completed</h2>
+            <h2>Finished</h2>
             <strong>{{ counts.completed }}</strong>
         </article>
 
@@ -43,20 +57,28 @@
 
     </section>
 
+
+    <!-- DAILY PROGRESS -->
     <section class="dashboard-progress">
+
         <div class="progress-heading">
+
             <div>
                 <h2>Daily Progress</h2>
 
                 <p>
-                    {{ completed_today }} of {{ today_tasks|length }}
-                    task{% if today_tasks|length != 1 %}s{% endif %}
+                    {{ completed_today }} of {{ total_today }}
+                    task{% if total_today != 1 %}s{% endif %}
                     completed
                 </p>
             </div>
 
-            <strong>{{ daily_progress }}%</strong>
+            <strong>
+                {{ daily_progress }}%
+            </strong>
+
         </div>
+
 
         <div
             class="dashboard-progress-track"
@@ -71,107 +93,135 @@
             ></div>
         </div>
 
+
         <div class="dashboard-extra-counts">
+
             <span>
-                Pending: <strong>{{ counts.pending }}</strong>
+                Pending:
+                <strong>{{ counts.pending }}</strong>
             </span>
 
             <span>
-                Overdue: <strong>{{ counts.overdue }}</strong>
+                Overdue:
+                <strong>{{ counts.overdue }}</strong>
             </span>
+
         </div>
+
     </section>
 
+
+    <!-- TODAY'S TASKS -->
     <section class="today-section">
 
         <div class="dashboard-section-heading">
+
             <h2>Your Tasks Today</h2>
 
             <a href="{{ url_for('tasks.list_tasks') }}">
                 View all tasks
             </a>
+
         </div>
+
 
         {% if today_tasks %}
 
-            <div class="task-list">
+    <div class="task-card-list">
 
-                {% for task in today_tasks %}
-    <article class="task-row">
+        {% for task in today_tasks %}
 
-        <div class="task-main">
+            <article class="task-card task-card-{{ task.status }}">
 
-            <div
-                class="task-status-dot
-                {% if task.status|lower == 'completed' %}
-                    status-completed
-                {% elif task.status|lower == 'on-going' %}
-                    status-on-going
-                {% elif task.status|lower == 'dropped' %}
-                    status-dropped
-                {% endif %}"
-            ></div>
+                <div class="task-card-status">
+                    {% if task.status == "completed" %}
+                        Finished
+                    {% else %}
+                        {{ task.status|replace("-", " ")|title }}
+                    {% endif %}
+                </div>
 
-            <div>
-                <button
-                    type="button"
-                    class="task-title-button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#taskDetailsModal{{ task.id }}"
-                >
-                    {{ task.title }}
-                </button>
+                <span class="priority-badge priority-{{ task.priority }}">
+                    {{ task.priority|title }}
+                </span>
 
-                {% if task.description %}
-                    <p>{{ task.description }}</p>
-                {% endif %}
-            </div>
+                <div class="task-card-main">
 
-        </div>
-
-        <span class="priority-badge priority-{{ task.priority|lower }}">
-            {{ task.priority|title }}
-        </span>
-
-        <span class="status-label">
-            {{ task.status|replace("-", " ")|title }}
-        </span>
-
-    </article>
-
-    <div
-        class="modal fade"
-        id="taskDetailsModal{{ task.id }}"
-        tabindex="-1"
-        aria-labelledby="taskDetailsModalLabel{{ task.id }}"
-        aria-hidden="true"
-    >
-        <div class="modal-dialog modal-dialog-centered task-details-modal">
-            <div class="modal-content">
-
-                <div class="task-row-actions">
-
-                    <span class="status-label">
-                        {% if task.status == "completed" %}
-                            Finished
-                        {% else %}
-                            {{ task.status|replace("-", " ")|title }}
-                        {% endif %}
-                    </span>
-
-                    <button
-                        type="button"
-                        class="task-action-button delete-action-button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteTaskModal{{ task.id }}"
-                        aria-label="Delete {{ task.title }}"
+                    <form
+                        action="{{ url_for('tasks.toggle_complete', task_id=task.id) }}"
+                        method="POST"
+                        class="task-complete-form"
                     >
-                        <i class="bi bi-trash3"></i>
-                    </button>
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="
+                                task-check-circle
+                                {% if task.status == 'completed' %}
+                                    is-completed
+                                {% endif %}
+                                {% if task.status == 'dropped' %}
+                                    is-dropped
+                                {% endif %}
+                            "
+                            {% if task.status == "dropped" %}
+                                disabled
+                            {% endif %}
+                            aria-label="
+                                {% if task.status == 'completed' %}
+                                    Mark {{ task.title }} as incomplete
+                                {% else %}
+                                    Mark {{ task.title }} as finished
+                                {% endif %}
+                            "
+                        >
+                            {% if task.status == "completed" %}
+                                <i class="bi bi-check-lg"></i>
+                            {% endif %}
+                        </button>
+                    </form>
+
+                    <div class="task-card-information">
+
+                        <button
+                            type="button"
+                            class="task-title-button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#taskDetailsModal{{ task.id }}"
+                        >
+                            {{ task.title }}
+                        </button>
+
+                        {% if task.description %}
+                            <p>{{ task.description }}</p>
+                        {% else %}
+                            <p class="task-no-description">
+                                No description
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <div class="task-card-due-date">
+                    <span>Due Date</span>
+
+                    <strong>
+                        {{ task.due_date.strftime("%d %b %Y") }}
+                    </strong>
+                </div>
+
+                <div class="task-card-actions">
 
                     <button
                         type="button"
-                        class="task-action-button"
+                        class="task-card-action edit-action"
                         data-bs-toggle="modal"
                         data-bs-target="#editTaskModal{{ task.id }}"
                         aria-label="Edit {{ task.title }}"
@@ -179,69 +229,50 @@
                         <i class="bi bi-pencil-square"></i>
                     </button>
 
+                    <button
+                        type="button"
+                        class="task-card-action delete-action"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteTaskModal{{ task.id }}"
+                        aria-label="Delete {{ task.title }}"
+                    >
+                        <i class="bi bi-trash3"></i>
+                    </button>
+
                 </div>
 
-                <h2
-                    class="task-details-number"
-                    id="taskDetailsModalLabel{{ task.id }}"
-                >
-                    Task #{{ "%05d"|format(task.id) }}
-                </h2>
+            </article>
 
-                <div class="task-details-field">
-                    <label>Task Name:</label>
-                    <div class="task-details-value">
-                        {{ task.title }}
-                    </div>
-                </div>
+            {% include "tasks/_details_modal.html" %}
+            {% include "tasks/_edit_modal.html" %}
+            {% include "tasks/_delete_modal.html" %}
 
-                <div class="task-details-field">
-                    <label>Task Description:</label>
+        {% endfor %}
 
-                    <div class="task-details-value task-description-value">
-                        {{ task.description or "No description provided." }}
-                    </div>
-                </div>
-
-                <div class="task-details-field">
-                    <label>Priority:</label>
-                    <div class="task-details-value">
-                        {{ task.priority|title }}
-                    </div>
-                </div>
-
-                <div class="task-details-field">
-                    <label>Due Date:</label>
-                    <div class="task-details-value">
-                        {{ task.due_date.strftime("%d %B %Y") }}
-                    </div>
-                </div>
-
-            </div>
-        </div>
     </div>
 
-    {% include "tasks/_edit_modal.html" %}
-    {% include "tasks/_delete_modal.html" %}
-{% endfor %}
-
-            </div>
 
         {% else %}
 
             <div class="empty-task-list">
+
                 <i class="bi bi-check2-circle"></i>
 
-                <h3>No tasks due today</h3>
+                <h3>No tasks scheduled for today</h3>
 
-                <p>Create a task to start planning your day.</p>
+                <p>
+                    Create a task or schedule one for today to start planning your day.
+                </p>
 
-                <a
-                    href="{{ url_for('tasks.list_tasks', create=1) }}"
+                <button
+                    type="button"
                     class="primary-button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createTaskModal"
                 >
-                    Create your first task
-                </a>
+                    Create Task
+                </button>
+
             </div>
 
         {% endif %}
@@ -249,4 +280,7 @@
     </section>
 
 </main>
+
+{% include "tasks/_create_modal.html" %}
+
 {% endblock %}
