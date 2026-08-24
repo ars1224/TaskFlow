@@ -54,14 +54,65 @@ def get_today_tasks():
 @task_bp.get("/")
 @login_required
 def list_tasks():
-    sync_today_task_statuses
+    sync_today_task_statuses()
+
+    search = request.args.get(
+        "q",
+        "",
+    ).strip()
+
+    selected_statuses = request.args.getlist(
+        "status"
+    )
+
+    selected_priorities = request.args.getlist(
+        "priority"
+    )
+
+    due_date_value = request.args.get(
+        "due_date",
+        "",
+    ).strip()
+
+    due_date = None
+
+    if due_date_value:
+        try:
+            due_date = datetime.strptime(
+                due_date_value,
+                "%Y-%m-%d",
+            ).date()
+        except ValueError:
+            due_date_value = ""
+
+    tasks = get_all_tasks(
+        search=search,
+        statuses=selected_statuses,
+        priorities=selected_priorities,
+        due_date=due_date,
+    )
+
+    filters_active = any(
+        [
+            selected_statuses,
+            selected_priorities,
+            due_date_value,
+        ]
+    )
+
     return render_template(
         "tasks/list.html",
-        tasks=get_all_tasks(),
+        tasks=tasks,
         today=get_today(),
         status_labels=STATUS_LABELS,
         form_data={},
         open_create_modal=request.args.get("create") == "1",
+
+        search=search,
+        selected_statuses=selected_statuses,
+        selected_priorities=selected_priorities,
+        selected_due_date=due_date_value,
+        filters_active=filters_active,
     )
 
 
@@ -309,26 +360,75 @@ def edit_task(task_id):
         or url_for("tasks.list_tasks")
     )
 
-def get_all_tasks():
+def get_all_tasks(
+    search="",
+    statuses=None,
+    priorities=None,
+    due_date=None,
+):
+    today = get_today()
+
+    statuses = statuses or []
+    priorities = priorities or []
+
     priority_order = case(
         (Task.priority == "high", 1),
         (Task.priority == "medium", 2),
         else_=3,
     )
 
-    return db.session.scalars(
-        db.select(Task)
-        .where(
-            Task.user_id == current_user.id,
-        )
-        .order_by(
-            Task.scheduled_date.asc(),
-            priority_order,
-            Task.due_date.asc(),
-            Task.created_at.desc(),
-        )
-    ).all()
+    query = db.select(Task).where(
+        Task.user_id == current_user.id,
 
+        # Task List contains today + future only
+        Task.scheduled_date >= get_today(),
+    )
+
+    # Search by title
+    if search:
+        query = query.where(
+            Task.title.ilike(f"%{search}%")
+        )
+
+    # Multiple status filters
+    valid_statuses = [
+        status
+        for status in statuses
+        if status in STATUS_LABELS
+    ]
+
+    if valid_statuses:
+        query = query.where(
+            Task.status.in_(valid_statuses)
+        )
+
+    # Multiple priority filters
+    valid_priorities = [
+        priority
+        for priority in priorities
+        if priority in VALID_PRIORITIES
+    ]
+
+    if valid_priorities:
+        query = query.where(
+            Task.priority.in_(valid_priorities)
+        )
+
+    # Due date
+    if due_date is not None:
+        query = query.where(
+            Task.due_date == due_date
+        )
+
+    # Always date first, then priority
+    query = query.order_by(
+        Task.scheduled_date.asc(),
+        priority_order,
+        Task.due_date.asc(),
+        Task.created_at.desc(),
+    )
+
+    return db.session.scalars(query).all()
 @task_bp.post("/<int:task_id>/delete")
 @login_required
 def delete_task(task_id):
@@ -430,4 +530,163 @@ def toggle_complete(task_id):
     return redirect(
         request.referrer
         or url_for("tasks.list_tasks")
+    )
+
+@task_bp.post("/<int:task_id>/review")
+@login_required
+def review_task(task_id):
+    task = Task.query.filter_by(
+        id=task_id,
+        user_id=current_user.id,
+    ).first_or_404()
+
+    status = request.form.get(
+        "status",
+        task.status,
+    ).strip().lower()
+
+    priority = request.form.get(
+        "priority",
+        task.priority,
+    ).strip().lower()
+
+    remarks = request.form.get(
+        "remarks",
+        "",
+    ).strip()
+
+    reflection = request.form.get(
+        "reflection",
+        "",
+    ).strip()
+
+    errors = []
+
+    if status not in STATUS_LABELS:
+        errors.append(
+            "Please select a valid task status."
+        )
+
+    if priority not in VALID_PRIORITIES:
+        errors.append(
+            "Please select a valid priority."
+        )
+
+    if len(remarks) > 2000:
+        errors.append(
+            "Remarks must contain 2,000 characters or fewer."
+        )
+
+    if len(reflection) > 2000:
+        errors.append(
+            "Reflection must contain 2,000 characters or fewer."
+        )
+
+    # Historical incomplete tasks should have a remark
+    if (
+        status in {"yet-to-do", "on-going"}
+        and task.scheduled_date < get_today()
+        and not remarks
+    ):
+        errors.append(
+            "Please add a remark for an incomplete task."
+        )
+
+    if errors:
+        for error in errors:
+            flash(error, "danger")
+
+        return redirect(
+            request.referrer
+            or url_for("tasks.task_history")
+        )
+
+    task.status = status
+    task.priority = priority
+    task.remarks = remarks or None
+    task.reflection = reflection or None
+
+    # Keep completed_at consistent
+    if status == "completed":
+
+        if task.completed_at is None:
+            task.completed_at = datetime.now(
+                NZ_TIMEZONE
+            )
+
+    else:
+        task.completed_at = None
+
+    try:
+        db.session.commit()
+
+    except SQLAlchemyError:
+        db.session.rollback()
+
+        flash(
+            "The task review could not be saved. Please try again.",
+            "danger",
+        )
+
+    else:
+        flash(
+            "Task review saved successfully.",
+            "success",
+        )
+
+    return redirect(
+        request.referrer
+        or url_for("tasks.task_history")
+    )
+
+@task_bp.get("/history")
+@login_required
+def task_history():
+    today = get_today()
+
+    search = request.args.get(
+        "q",
+        "",
+    ).strip()
+
+    query = db.select(Task).where(
+        Task.user_id == current_user.id,
+        Task.scheduled_date < today,
+    )
+
+    # Search by task title
+    if search:
+        query = query.where(
+            Task.title.ilike(f"%{search}%")
+        )
+
+    history_tasks = db.session.scalars(
+        query.order_by(
+            Task.scheduled_date.desc(),
+            Task.created_at.desc(),
+        )
+    ).all()
+
+    history_groups = []
+
+    for task in history_tasks:
+        if (
+            not history_groups
+            or history_groups[-1][0] != task.scheduled_date
+        ):
+            history_groups.append(
+                (
+                    task.scheduled_date,
+                    [task],
+                )
+            )
+        else:
+            history_groups[-1][1].append(task)
+
+    return render_template(
+        "tasks/history.html",
+        history_groups=history_groups,
+        today=today,
+        status_labels=STATUS_LABELS,
+        search=search,
     )

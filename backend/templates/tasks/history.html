@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block title %}Task History | TaskFlow{% endblock %}
+
+{% block content %}
+
+<section class="task-page history-page">
+
+    <!-- PAGE HEADER -->
+    <header class="task-page-header">
+
+        <div>
+            <h1>Task History</h1>
+
+            <p>
+                Review your previous tasks.
+            </p>
+        </div>
+
+    </header>
+
+    <!-- HISTORY SEARCH -->
+<form
+    method="GET"
+    action="{{ url_for('tasks.task_history') }}"
+    class="history-search-form"
+>
+
+    <div class="task-search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+            type="search"
+            name="q"
+            value="{{ search }}"
+            placeholder="Search task history..."
+            aria-label="Search task history by title"
+        >
+
+        {% if search %}
+
+            <a
+                href="{{ url_for('tasks.task_history') }}"
+                class="history-search-clear"
+                aria-label="Clear search"
+            >
+                <i class="bi bi-x-lg"></i>
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</form>
+
+    <!-- HISTORY -->
+    <section class="task-date-groups">
+
+        {% if history_groups %}
+
+            {% for task_date, date_tasks in history_groups %}
+
+                <section class="task-date-section history-date-section">
+
+                    <!-- DATE -->
+                    <header class="task-date-heading">
+
+                        <div>
+
+                            <h2>
+                                {{ task_date.strftime("%A, %d %B %Y") }}
+                            </h2>
+
+                        </div>
+
+
+                        <span class="task-date-count">
+                            {{ date_tasks|length }}
+                            task{% if date_tasks|length != 1 %}s{% endif %}
+                        </span>
+
+                    </header>
+
+
+                    <!-- TASKS -->
+                    <div class="task-card-list">
+
+                        {% for task in date_tasks %}
+
+                            <article
+                                class="task-card task-card-{{ task.status }}"
+                            >
+
+                                <!-- STATUS -->
+                                <div class="task-card-status">
+
+                                    {% if task.status == "completed" %}
+
+                                        Finished
+
+                                    {% elif task.status == "dropped" %}
+
+                                        Dropped
+
+                                    {% elif task.due_date < today %}
+
+                                        Incomplete
+
+                                    {% else %}
+
+                                        {{ task.status|replace("-", " ")|title }}
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- PRIORITY -->
+                                <span
+                                    class="priority-badge priority-{{ task.priority }}"
+                                >
+                                    {{ task.priority|title }}
+                                </span>
+
+
+                                <!-- TASK INFO -->
+                                <div class="task-card-main">
+
+                                    <!-- READ-ONLY STATUS CIRCLE -->
+                                    <span
+                                        class="
+                                            task-check-circle
+                                            history-task-circle
+
+                                            {% if task.status == 'completed' %}
+                                                is-completed
+                                            {% endif %}
+
+                                            {% if task.status == 'dropped' %}
+                                                is-dropped
+                                            {% endif %}
+                                        "
+                                        aria-hidden="true"
+                                    >
+
+                                        {% if task.status == "completed" %}
+                                            <i class="bi bi-check-lg"></i>
+
+                                        {% elif task.status == "dropped" %}
+                                            <i class="bi bi-x-lg"></i>
+                                        {% endif %}
+
+                                        {% if
+                                            task.due_date < today
+                                            and task.status not in ["completed", "dropped"]
+                                        %}
+
+                                            <span class="overdue-badge">
+                                                Overdue
+                                            </span>
+
+                                        {% endif %}
+
+                                    </span>
+
+
+                                    <div class="task-card-information">
+
+                                        <button
+                                            type="button"
+                                            class="task-title-button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#taskDetailsModal{{ task.id }}"
+                                        >
+                                            {{ task.title }}
+                                        </button>
+
+
+                                        {% if task.description %}
+
+                                            <p>
+                                                {{ task.description }}
+                                            </p>
+
+                                        {% else %}
+
+                                            <p class="task-no-description">
+                                                No description
+                                            </p>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- DUE DATE -->
+                                <div class="task-card-due-date">
+
+                                    <span>
+                                        Due Date
+                                    </span>
+
+                                    <strong>
+                                        {{ task.due_date.strftime("%d %b %Y") }}
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- HISTORY INDICATOR -->
+                                <div class="task-card-actions">
+
+                                    <button
+                                        type="button"
+                                        class="task-card-action history-details-action"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#taskDetailsModal{{ task.id }}"
+                                        aria-label="View {{ task.title }}"
+                                    >
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="task-card-action"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#taskReviewModal{{ task.id }}"
+                                        aria-label="Review {{ task.title }}"
+                                    >
+                                        <i class="bi bi-journal-text"></i>
+                                    </button>
+
+                                </div>
+
+                            </article>
+
+
+                            <!-- DETAILS MODAL -->
+                            {% include "tasks/_details_modal.html" %}
+                            {% include "tasks/_review_modal.html" %}
+
+
+                        {% endfor %}
+
+                    </div>
+
+                </section>
+
+            {% endfor %}
+
+
+       {% else %}
+
+    <div class="empty-task-list history-empty-state">
+
+        {% if search %}
+
+            <i class="bi bi-search"></i>
+
+            <h3>
+                No history tasks found
+            </h3>
+
+            <p>
+                No previous tasks match
+                "<strong>{{ search }}</strong>".
+            </p>
+
+            <a
+                href="{{ url_for('tasks.task_history') }}"
+                class="primary-button"
+            >
+                Clear Search
+            </a>
+
+        {% else %}
+
+            <i class="bi bi-clock-history"></i>
+
+            <h3>
+                No task history yet
+            </h3>
+
+            <p>
+                Tasks will appear here after their scheduled day has passed.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+{% endif %}
+
+    </section>
+
+</section>
+
+{% endblock %}

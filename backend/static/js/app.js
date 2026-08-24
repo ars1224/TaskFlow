@@ -328,3 +328,130 @@ document.addEventListener(
 
     }
 );
+
+/* =========================================================
+   TASK FILTER PANEL
+   ========================================================= */
+
+const filterToggleButton =
+    document.querySelector("#filterToggleButton");
+
+const taskFilterPanel =
+    document.querySelector("#taskFilterPanel");
+
+
+if (filterToggleButton && taskFilterPanel) {
+
+    filterToggleButton.addEventListener(
+        "click",
+        () => {
+
+            const isOpen =
+                !taskFilterPanel.hasAttribute("hidden");
+
+            if (isOpen) {
+
+                taskFilterPanel.setAttribute(
+                    "hidden",
+                    ""
+                );
+
+                filterToggleButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+            } else {
+
+                taskFilterPanel.removeAttribute(
+                    "hidden"
+                );
+
+                filterToggleButton.setAttribute(
+                    "aria-expanded",
+                    "true"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+/* =========================================================
+   Notifications
+   ========================================================= */
+
+const notificationButton =
+    document.querySelector("#notificationButton");
+
+const notificationPanel =
+    document.querySelector("#notificationPanel");
+
+
+if (notificationButton && notificationPanel) {
+
+    notificationButton.addEventListener(
+        "click",
+        (event) => {
+
+            event.stopPropagation();
+
+            const isOpen =
+                !notificationPanel.hasAttribute("hidden");
+
+            if (isOpen) {
+
+                notificationPanel.setAttribute(
+                    "hidden",
+                    ""
+                );
+
+                notificationButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+            } else {
+
+                notificationPanel.removeAttribute(
+                    "hidden"
+                );
+
+                notificationButton.setAttribute(
+                    "aria-expanded",
+                    "true"
+                );
+
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "click",
+        (event) => {
+
+            if (
+                !notificationPanel.contains(event.target)
+                && !notificationButton.contains(event.target)
+            ) {
+
+                notificationPanel.setAttribute(
+                    "hidden",
+                    ""
+                );
+
+                notificationButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+            }
+
+        }
+    );
+
+}

@@ -1,0 +1,214 @@
+<div
+    class="modal fade"
+    id="taskReviewModal{{ task.id }}"
+    tabindex="-1"
+    aria-labelledby="taskReviewModalLabel{{ task.id }}"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content task-review-modal">
+
+            <form
+                action="{{ url_for('tasks.review_task', task_id=task.id) }}"
+                method="POST"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <div class="modal-header">
+
+                    <div>
+                        <h2
+                            class="modal-title"
+                            id="taskReviewModalLabel{{ task.id }}"
+                        >
+                            Review Task
+                        </h2>
+
+                        <p>
+                            {{ task.title }}
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <!-- STATUS -->
+                    <div class="form-field">
+
+                        <label
+                            for="review-status-{{ task.id }}"
+                        >
+                            Status
+                        </label>
+
+                        <select
+                            id="review-status-{{ task.id }}"
+                            name="status"
+                            required
+                        >
+
+                            <option
+                                value="yet-to-do"
+                                {% if task.status == "yet-to-do" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Yet-to-do
+                            </option>
+
+                            <option
+                                value="on-going"
+                                {% if task.status == "on-going" %}
+                                    selected
+                                {% endif %}
+                            >
+                                On-going
+                            </option>
+
+                            <option
+                                value="completed"
+                                {% if task.status == "completed" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Finished
+                            </option>
+
+                            <option
+                                value="dropped"
+                                {% if task.status == "dropped" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Dropped
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PRIORITY -->
+                    <div class="form-field">
+
+                        <label
+                            for="review-priority-{{ task.id }}"
+                        >
+                            Priority
+                        </label>
+
+                        <select
+                            id="review-priority-{{ task.id }}"
+                            name="priority"
+                            required
+                        >
+
+                            {% for value in ["high", "medium", "low"] %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if task.priority == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ value|title }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- REMARKS -->
+                    <div class="form-field">
+
+                        <label
+                            for="review-remarks-{{ task.id }}"
+                        >
+                            Remarks
+                        </label>
+
+                        <textarea
+                            id="review-remarks-{{ task.id }}"
+                            name="remarks"
+                            rows="3"
+                            maxlength="2000"
+                            placeholder="Why was this task incomplete, delayed, or changed?"
+                        >{{ task.remarks or "" }}</textarea>
+
+                        {% if task.status in ["yet-to-do", "on-going"] %}
+
+                            <small>
+                                Add a remark explaining why this task was not completed.
+                            </small>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- REFLECTION -->
+                    <div class="form-field">
+
+                        <label
+                            for="review-reflection-{{ task.id }}"
+                        >
+                            Reflection & Lessons Learned
+                        </label>
+
+                        <textarea
+                            id="review-reflection-{{ task.id }}"
+                            name="reflection"
+                            rows="4"
+                            maxlength="2000"
+                            placeholder="What did you learn from this task?"
+                        >{{ task.reflection or "" }}</textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        Save Review
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>

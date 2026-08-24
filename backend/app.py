@@ -9,7 +9,7 @@ from main import main_bp
 from profile_routes import profile_bp
 from datetime import timedelta
 from task_routes import task_bp
-
+from notifications import get_notifications
 
 from extensions import csrf, db, login_manager, migrate
 
@@ -87,6 +87,10 @@ def create_app():
     # Creates tables that do not exist during development
     with app.app_context():
         db.create_all()
+
+    @app.context_processor
+    def inject_notifications():
+        return get_notifications()
 
     return app
 

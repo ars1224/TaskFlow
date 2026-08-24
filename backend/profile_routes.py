@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
@@ -6,8 +7,7 @@ from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
 from extensions import db
-from models import User
-
+from models import Task, User
 
 profile_bp = Blueprint(
     "profile",
@@ -19,13 +19,53 @@ profile_bp = Blueprint(
 @profile_bp.get("/")
 @login_required
 def view_profile():
-    today = datetime.now().strftime("%A %d %B %Y")
+    nz_timezone = ZoneInfo("Pacific/Auckland")
+
+    today = datetime.now(
+        nz_timezone
+    ).strftime("%A %d %B %Y")
+
+    tasks = db.session.scalars(
+        db.select(Task)
+        .where(
+            Task.user_id == current_user.id
+        )
+    ).all()
+
+    stats = {
+        "total": len(tasks),
+
+        "yet_to_do": sum(
+            task.status == "yet-to-do"
+            for task in tasks
+        ),
+
+        "on_going": sum(
+            task.status == "on-going"
+            for task in tasks
+        ),
+
+        "completed": sum(
+            task.status == "completed"
+            for task in tasks
+        ),
+
+        "dropped": sum(
+            task.status == "dropped"
+            for task in tasks
+        ),
+    }
+
+    joined_date = current_user.created_at.astimezone(
+        nz_timezone
+    ).strftime("%d %B %Y")
 
     return render_template(
         "profile.html",
         today=today,
+        stats=stats,
+        joined_date=joined_date,
     )
-
 
 @profile_bp.post("/update")
 @login_required

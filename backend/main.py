@@ -53,21 +53,25 @@ def dashboard():
     def task_status(task):
         return task.status.strip().lower()
 
+
     yet_to_do = sum(
         task_status(task) == "yet-to-do"
-        for task in tasks
+        for task in today_tasks
     )
+
     on_going = sum(
         task_status(task) == "on-going"
-        for task in tasks
+        for task in today_tasks
     )
+
     completed = sum(
         task_status(task) == "completed"
-        for task in tasks
+        for task in today_tasks
     )
+
     dropped = sum(
         task_status(task) == "dropped"
-        for task in tasks
+        for task in today_tasks
     )
 
     overdue = sum(
@@ -103,9 +107,24 @@ def dashboard():
         "on_going": on_going,
         "completed": completed,
         "dropped": dropped,
-        "pending": yet_to_do + on_going,
+        "pending": sum(
+            task_status(task) in {
+                "yet-to-do",
+                "on-going",
+                }
+                for task in today_tasks
+            ),
         "overdue": overdue,
     }
+
+    overdue = sum(
+    task.due_date < today
+    and task_status(task) not in {
+        "completed",
+        "dropped",
+    }
+    for task in tasks
+)
     
     return render_template(
         "dashboard.html",

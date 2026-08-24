@@ -8,6 +8,10 @@
         <div>
             <h1>Hi {{ current_user.full_name.split(' ')[0] }}!</h1>
             <p>Today is {{ today }}</p>
+            <p class="profile-member-since">
+                <i class="bi bi-calendar3"></i>
+                Member since {{ joined_date }}
+            </p>
         </div>
 
         <i class="bi bi-person-circle profile-icon" aria-hidden="true"></i>
@@ -16,22 +20,22 @@
     <div class="status-grid">
         <article class="status-card yet-to-do">
             <h2>Yet-to-do</h2>
-            <strong>0</strong>
+            <strong>{{ stats.yet_to_do }}</strong>
         </article>
 
         <article class="status-card ongoing">
             <h2>On-Going</h2>
-            <strong>0</strong>
+            <strong>{{ stats.on_going }}</strong>
         </article>
 
         <article class="status-card finished">
             <h2>Finished</h2>
-            <strong>0</strong>
+            <strong>{{ stats.completed }}</strong>
         </article>
 
         <article class="status-card dropped">
             <h2>Dropped</h2>
-            <strong>0</strong>
+            <strong>{{ stats.dropped }}</strong>
         </article>
     </div>
 

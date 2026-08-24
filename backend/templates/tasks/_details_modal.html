@@ -112,6 +112,39 @@
 
             </div>
 
+            {% if task.remarks %}
+
+                <div class="task-details-field">
+
+                    <label>
+                        Remarks:
+                    </label>
+
+                    <div class="task-details-value">
+                        {{ task.remarks }}
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            {% if task.reflection %}
+
+                <div class="task-details-field">
+
+                    <label>
+                        Reflection & Lessons Learned:
+                    </label>
+
+                    <div class="task-details-value">
+                        {{ task.reflection }}
+                    </div>
+
+                </div>
+
+            {% endif %}
+
         </div>
 
     </div>

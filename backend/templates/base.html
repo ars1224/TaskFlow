@@ -46,6 +46,169 @@
             </a>
 
             <nav class="sidebar-navigation" aria-label="Main navigation">
+                <div class="notification-wrapper">
+
+    <button
+        type="button"
+        class="notification-button"
+        id="notificationButton"
+        aria-label="Notifications"
+        aria-expanded="false"
+    >
+
+        <i class="bi bi-bell"></i>
+
+        {% if notification_count > 0 %}
+
+            <span class="notification-counter">
+                {% if notification_count > 99 %}
+                    99+
+                {% else %}
+                    {{ notification_count }}
+                {% endif %}
+            </span>
+
+        {% endif %}
+
+    </button>
+
+
+    <!-- DROPDOWN -->
+    <div
+        class="notification-panel"
+        id="notificationPanel"
+        hidden
+    >
+
+        <header class="notification-header">
+
+            <div>
+                <h3>Notifications</h3>
+
+                <span>
+                    {{ notification_count }}
+                    reminder{% if notification_count != 1 %}s{% endif %}
+                </span>
+            </div>
+
+        </header>
+
+
+        {% if notifications %}
+
+            <!-- SUMMARY -->
+            <div class="notification-summary">
+
+                {% if overdue_count %}
+                    <span class="notification-summary-overdue">
+                        {{ overdue_count }} overdue
+                    </span>
+                {% endif %}
+
+                {% if due_today_count %}
+                    <span class="notification-summary-today">
+                        {{ due_today_count }} today
+                    </span>
+                {% endif %}
+
+                {% if upcoming_count %}
+                    <span class="notification-summary-upcoming">
+                        {{ upcoming_count }} upcoming
+                    </span>
+                {% endif %}
+
+            </div>
+
+
+            <div class="notification-list">
+
+                {% for notification in notifications %}
+
+                    <div
+                        class="
+                            notification-item
+                            notification-{{ notification.type }}
+                        "
+                    >
+
+                        <div class="notification-icon">
+
+                            {% if notification.type == "overdue" %}
+
+                                <i class="bi bi-exclamation-circle"></i>
+
+                            {% elif notification.type == "today" %}
+
+                                <i class="bi bi-clock"></i>
+
+                            {% else %}
+
+                                <i class="bi bi-calendar-event"></i>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="notification-content">
+
+                            <strong>
+                                {{ notification.title }}
+                            </strong>
+
+                            <span>
+                                {{ notification.message }}
+                            </span>
+
+                        </div>
+
+
+                        <span
+                            class="
+                                notification-badge
+                                notification-badge-{{ notification.type }}
+                            "
+                        >
+
+                            {% if notification.type == "overdue" %}
+                                Overdue
+
+                            {% elif notification.type == "today" %}
+                                Today
+
+                            {% else %}
+                                Upcoming
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="notification-empty">
+
+                <i class="bi bi-check-circle"></i>
+
+                <strong>
+                    You're all caught up
+                </strong>
+
+                <span>
+                    No task reminders right now.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
                 <a
                     class="sidebar-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}"
                     href="{{ url_for('main.dashboard') }}"
@@ -62,10 +225,21 @@
                     <span>Task List</span>
                 </a>
 
-                <span class="sidebar-link disabled-link">
-                    <i class="bi bi-clock"></i>
-                    <span>Task History</span>
-                </span>
+                <a
+                    href="{{ url_for('tasks.task_history') }}"
+                    class="
+                        sidebar-link
+                        {% if request.endpoint == 'tasks.task_history' %}
+                            active
+                        {% endif %}
+                    "
+                >
+                    <i class="bi bi-clock-history"></i>
+
+                    <span>
+                        Task History
+                    </span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
