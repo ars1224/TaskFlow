@@ -257,51 +257,6 @@ body {
 
 /* Dashboard stays inside the viewport */
 
-@media (min-width: 768px) {
-    .dashboard {
-        display: flex;
-        flex-direction: column;
-
-        height: calc(100vh - 78px);
-        max-height: calc(100vh - 78px);
-
-        overflow: hidden;
-    }
-
-    .dashboard-header,
-    .status-grid,
-    .dashboard-progress {
-        flex-shrink: 0;
-    }
-
-    /* Today's task section fills remaining space */
-
-    .today-section {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-
-        min-height: 0;
-        overflow: hidden;
-    }
-
-    .dashboard-section-heading {
-        flex-shrink: 0;
-    }
-
-    /* Only the task cards scroll */
-
-    .today-section .task-card-list {
-        flex: 1;
-
-        min-height: 0;
-        padding-right: 8px;
-        padding-bottom: 10px;
-
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-}
 
 .today-section .task-card-list {
     scrollbar-width: thin;
@@ -653,7 +608,6 @@ body {
     background: var(--finished-background);
     border-color: var(--finished-background);
 }
-
 
 
 /* Dropped */
@@ -1445,451 +1399,14 @@ body {
     transform: translateY(-1px);
 }
 
-@media (max-width: 767px) {
-    .delete-task-actions {
-        flex-direction: column-reverse;
-    }
-
-    .delete-task-actions button {
-        width: 100%;
-    }
-}
-
-@media (max-width: 767px) {
-    .task-date-groups {
-        gap: 26px;
-    }
-
-    .task-date-today {
-        padding: 12px;
-    }
-
-    .task-date-heading {
-        align-items: flex-start;
-    }
-
-    .task-date-heading h2 {
-        font-size: 19px;
-    }
-}
-
-@media (max-width: 767px) {
-
-    .task-modal {
-        width: calc(100% - 24px);
-        margin: 12px auto;
-    }
-
-    .task-modal .modal-header {
-        padding: 20px 20px 15px;
-    }
-
-    .task-modal .modal-body {
-        padding: 20px;
-    }
-
-    .task-modal .modal-footer {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-
-        padding: 16px 20px 20px;
-    }
-
-    .task-modal .primary-button,
-    .task-modal .secondary-button {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .delete-task-actions {
-        flex-direction: column-reverse;
-    }
-
-    .delete-task-actions .secondary-button,
-    .delete-task-actions .delete-button {
-        width: 100%;
-    }
-}
-@media (max-width: 767px) {
-    .task-row-actions {
-        width: fit-content;
-        margin-left: 35px;
-    }
-
-    .task-edit-actions {
-        flex-direction: column-reverse;
-    }
-
-    .task-edit-actions .primary-button,
-    .task-edit-actions .secondary-button {
-        width: 100%;
-    }
-}
-
-@media (max-width: 767px) {
-    .task-details-modal {
-        width: calc(100% - 24px);
-        max-width: none;
-        margin: 12px auto;
-    }
-
-    .task-details-modal .modal-content {
-        padding: 22px 20px 28px;
-        border-radius: 18px;
-    }
-}
-
-@media (max-width: 767px) {
-    .task-page-header {
-        display: block;
-    }
-
-    .task-page-header .primary-button {
-        width: 100%;
-        margin-top: 22px;
-    }
-
-    .task-row {
-        grid-template-columns: 1fr;
-        gap: 9px;
-    }
-
-    .task-row time,
-    .task-row .priority-badge,
-    .task-row .status-label {
-        width: fit-content;
-        margin-left: 35px;
-    }
-}
 
 /* =========================================================
    Mobile Task Cards
    ========================================================= */
 
-@media (max-width: 767px) {
-
-    .task-card-list {
-        gap: 14px;
-    }
-
-    .task-card {
-        position: relative;
-
-        display: grid;
-
-        grid-template-columns: minmax(0, 1fr) auto;
-
-        grid-template-areas:
-            "status priority"
-            "main actions"
-            "due actions";
-
-        align-items: center;
-
-        gap: 14px 16px;
-
-        min-height: 180px;
-
-        padding: 16px 24px 18px;
-
-        border-radius: 28px;
-    }
-
-    .task-card-status {
-        grid-area: status;
-
-        align-self: start;
-        justify-self: start;
-
-        font-size: 18px;
-        font-weight: 800;
-    }
-
-    /* Main information */
-
-    .task-card-main {
-        grid-area: main;
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 18px;
-
-        min-width: 0;
-    }
-
-    .task-title-button {
-        max-width: 100%;
-
-        font-size: 20px;
-        line-height: 1.1;
-
-        overflow: hidden;
-
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-        .task-card-information {
-        min-width: 0;
-    }
-
-
-  .task-card-information p {
-        margin-top: 7px;
-
-        font-size: 14px;
-
-        overflow: hidden;
-
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-
-    /* Circle */
-
-      .task-check-circle {
-        width: 30px;
-        height: 30px;
-
-        flex: 0 0 30px;
-
-        font-size: 19px;
-    }
-
-
-    /* Priority */
-
-
-    .task-card .priority-badge {
-        grid-area: priority;
-
-        align-self: start;
-        justify-self: end;
-
-        min-width: 110px;
-
-        padding: 6px 16px;
-
-        margin: 0;
-
-        font-size: 14px;
-    }
-
-    /* Date */
-
-     .task-card-due-date {
-        position: static;
-
-        grid-area: due;
-
-        align-self: end;
-        justify-self: start;
-
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: flex-start;
-        justify-content: flex-end;
-
-        gap: 2px;
-
-        margin-left: 48px;
-
-        transform: none;
-
-        text-align: left;
-    }
-
-
-    .task-card-due-date span {
-        font-size: 14px;
-        font-weight: 500;
-    }
-
-    .task-card-due-date strong {
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    /* Actions */
-
-    .task-card-actions {
-        gap: 8px;
-    }
-
-
-    .task-card-action {
-        width: 38px;
-        height: 38px;
-
-        font-size: 24px;
-    }
-
-
-    /* Date sections */
-
-    .task-date-groups {
-        gap: 28px;
-    }
-
-    .task-date-today {
-        padding: 12px;
-
-        border-radius: 16px;
-    }
-
-    .task-date-heading {
-        align-items: flex-start;
-    }
-
-    .task-date-heading h2 {
-        font-size: 18px;
-    }
-
-    .task-date-count {
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 767px) {
-    .profile-heading {
-        justify-content: flex-start;
-        gap: 18px;
-        margin: 25px 0 30px;
-    }
-
-    .profile-heading h1 {
-        font-size: 38px;
-    }
-
-    .profile-icon {
-        font-size: 70px;
-    }
-
-    .profile-forms {
-        grid-template-columns: 1fr;
-    }
-
-    .profile-panel {
-        padding: 24px 20px;
-    }
-}
 
 /* Mobile */
 
-@media (max-width: 767px) {
-    .auth-main {
-        padding: 24px 20px;
-    }
-
-    .auth-card {
-        padding: 42px 38px 32px;
-        border-radius: 42px;
-    }
-
-    .auth-card h1 {
-        font-size: 34px;
-    }
-
-    .mobile-header {
-        position: fixed;
-        inset: 0 0 auto;
-        z-index: 1040;
-        display: flex;
-        height: 72px;
-        align-items: center;
-        gap: 22px;
-        padding: 0 18px;
-        background: #ffffff;
-        border-bottom: 1px solid #eeeeee;
-    }
-
-    .menu-button {
-        padding: 0;
-        color: #111111;
-        background: transparent;
-        border: 0;
-        font-size: 38px;
-        line-height: 1;
-    }
-
-    .mobile-logo {
-        font-size: 30px;
-    }
-
-    .sidebar {
-        top: 72px;
-        width: min(100%, 360px);
-        padding-top: 20px;
-        transform: translateX(-105%);
-        transition: transform 0.25s ease;
-    }
-
-    .sidebar.open {
-        transform: translateX(0);
-    }
-
-    .sidebar-logo {
-        display: none;
-    }
-
-    .sidebar-navigation {
-        margin-top: 0;
-    }
-
-    .sidebar-overlay {
-        position: fixed;
-        inset: 72px 0 0;
-        z-index: 900;
-        display: block;
-        visibility: hidden;
-        background: rgba(0, 0, 0, 0.35);
-        opacity: 0;
-        transition: opacity 0.25s, visibility 0.25s;
-    }
-
-    .sidebar-overlay.open {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .app-main {
-        margin-left: 0;
-        padding: 105px 16px 40px;
-    }
-
-    .dashboard-header {
-        display: block;
-        margin-bottom: 27px;
-    }
-
-    .dashboard-header h1 {
-        font-size: 36px;
-    }
-
-    .create-task-button {
-        width: 100%;
-        margin: 28px 0 0;
-    }
-
-    .status-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-
-    .status-card {
-        min-height: 105px;
-        padding: 16px 8px;
-    }
-
-    .status-card h2 {
-        font-size: 19px;
-    }
-}
 
 /* =========================================================
    Task Search + Collapsible Filters
@@ -2150,32 +1667,6 @@ body {
     color: var(--taskflow-purple);
 }
 
-@media (max-width: 767px) {
-
-    .task-search-toolbar {
-        gap: 8px;
-    }
-
-    .task-filter-panel {
-        position: static;
-
-        width: 100%;
-
-        margin-top: 10px;
-
-        box-shadow: none;
-    }
-
-    .filter-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .filter-apply-button,
-    .clear-filter-button {
-        width: 100%;
-    }
-}
 
 /* =========================================================
    Task History
@@ -2265,11 +1756,6 @@ body {
     padding-right: 46px;
 }
 
-@media (max-width: 767px) {
-    .history-search-form .task-search-box {
-        max-width: none;
-    }
-}
 
 /* =========================================================
    Notifications
@@ -2640,7 +2126,6 @@ body {
 }
 
 
-
 /* =========================================================
    Review Modal
    ========================================================= */
@@ -2685,7 +2170,716 @@ body {
    Notification Mobile Layout
    ========================================================= */
 
+
+/* =========================================================
+   Tablet Dashboard
+   ========================================================= */
+
+
+/* =========================================================
+   Small Phone Profile
+   320px - 390px
+   ========================================================= */
+
+
+/* =========================================================
+   Extra Small Phone Task Cards
+   320px - 340px
+
+   Used by:
+   - Dashboard task cards
+   - Task List cards
+   - History cards
+
+   Goal:
+   Show useful task information instead of cutting text
+   into "Tas..."
+   ========================================================= */
+
+
+/* =========================================================
+   Extra Small Phone Modal Buttons
+   320px - 340px
+   ========================================================= */
+
+
+/* =========================================================
+   Desktop Modal Buttons
+   ========================================================= */
+
+
+/* =========================================================
+   Tablet + Small Screen Task Cards
+   341px - 1100px
+
+   Prevent long task titles/descriptions from being cut off
+   on 1024px laptops/tablets and smaller screens.
+   ========================================================= */
+
+
+/* =========================================================
+   Responsive Layout
+   Consolidated breakpoints
+
+   Base styles: 1101px and wider
+   Tablet / small desktop: 768px - 1100px
+   Mobile: 341px - 767px
+   Small phone: up to 390px
+   Extra-small phone: up to 340px
+   ========================================================= */
+
+/* =========================================================
+   Desktop + Tablet shared behaviour
+   768px and wider
+   ========================================================= */
+
+@media (min-width: 768px) {
+    /* Keep the dashboard inside the viewport while allowing
+       only the task list to scroll. */
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 78px);
+        max-height: calc(100vh - 78px);
+        overflow: hidden;
+    }
+
+    .dashboard-header,
+    .status-grid,
+    .dashboard-progress {
+        flex-shrink: 0;
+    }
+
+    .today-section {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .dashboard-section-heading {
+        flex-shrink: 0;
+    }
+
+    .today-section .task-card-list {
+        flex: 1;
+        min-height: 0;
+        padding-right: 8px;
+        padding-bottom: 10px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /* A task card should never be compressed just to fit
+       more cards into the dashboard viewport. */
+    .today-section .task-card {
+        flex-shrink: 0;
+    }
+
+    /* Compact, consistent desktop modal actions. */
+    .task-modal .modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 16px 24px 22px;
+    }
+
+    .task-modal .primary-button,
+    .task-modal .secondary-button,
+    .task-edit-actions .primary-button,
+    .task-edit-actions .secondary-button {
+        width: auto;
+        min-width: 120px;
+        min-height: 42px;
+        padding: 9px 20px;
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .task-modal .primary-button,
+    .task-modal .secondary-button {
+        border-radius: 999px;
+    }
+
+    .task-edit-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+    }
+}
+
+/* =========================================================
+   Tablet / Small Desktop
+   768px - 1100px
+   ========================================================= */
+
+@media (min-width: 768px) and (max-width: 1100px) {
+
+    .profile-forms {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 20px;
+    }
+
+    .profile-panel {
+        min-width: 0;
+        padding: 24px 20px;
+    }
+
+    .profile-panel .primary-button {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+
+        padding: 10px 14px;
+        margin: 28px 0 0;
+
+        font-size: 15px;
+        line-height: 1.2;
+
+        white-space: normal;
+    }
+
+    .status-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .status-card {
+        min-width: 0;
+    }
+
+    /* Long task content gets a stacked card instead of being
+       squeezed by due-date and priority columns. */
+    .task-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "status priority"
+            "main main"
+            "due actions";
+        align-items: start;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 135px;
+        padding: 18px 20px;
+        gap: 14px 16px;
+        border-radius: 22px;
+    }
+
+    .task-card-status {
+        grid-area: status;
+        align-self: center;
+        min-width: 0;
+        font-size: 15px;
+    }
+
+    .task-card .priority-badge {
+        grid-area: priority;
+        align-self: center;
+        justify-self: end;
+        min-width: 90px;
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .task-card-main {
+        grid-area: main;
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        min-width: 0;
+        gap: 10px;
+    }
+
+    .task-card-information {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .task-title-button {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow: visible;
+        font-size: 17px;
+        line-height: 1.3;
+        text-overflow: clip;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .task-card-information p {
+        display: block;
+        width: 100%;
+        margin: 6px 0 0;
+        overflow: visible;
+        font-size: 13px;
+        line-height: 1.4;
+        text-overflow: clip;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .task-card-due-date {
+        position: static;
+        grid-area: due;
+        align-self: center;
+        justify-self: start;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+        transform: none;
+        text-align: left;
+    }
+
+    .task-card-due-date span,
+    .task-card-due-date strong {
+        font-size: 12px;
+        white-space: normal;
+    }
+
+    .task-card-due-date.is-overdue strong {
+        font-size: 12px;
+    }
+
+    .task-card-actions {
+        grid-area: actions;
+        align-self: center;
+        justify-self: end;
+        gap: 8px;
+    }
+
+    .task-card-action {
+        width: 34px;
+        height: 34px;
+        font-size: 21px;
+    }
+}
+
+/* =========================================================
+   Mobile
+   341px - 767px (plus shared mobile shell below 768px)
+   ========================================================= */
+
 @media (max-width: 767px) {
+    /* Authentication */
+    .auth-main {
+        padding: 24px 20px;
+    }
+
+    .auth-card {
+        padding: 42px 38px 32px;
+        border-radius: 42px;
+    }
+
+    .auth-card h1 {
+        font-size: 34px;
+    }
+
+    /* Application shell */
+    .mobile-header {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 1040;
+        display: flex;
+        height: 72px;
+        align-items: center;
+        gap: 22px;
+        padding: 0 18px;
+        background: #ffffff;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .menu-button {
+        padding: 0;
+        color: #111111;
+        background: transparent;
+        border: 0;
+        font-size: 38px;
+        line-height: 1;
+    }
+
+    .mobile-logo {
+        font-size: 30px;
+    }
+
+    .sidebar {
+        top: 72px;
+        width: min(100%, 360px);
+        padding-top: 20px;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-logo {
+        display: none;
+    }
+
+    .sidebar-navigation {
+        margin-top: 0;
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        inset: 72px 0 0;
+        z-index: 900;
+        display: block;
+        visibility: hidden;
+        background: rgba(0, 0, 0, 0.35);
+        opacity: 0;
+        transition: opacity 0.25s, visibility 0.25s;
+    }
+
+    .sidebar-overlay.open {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .app-main {
+        margin-left: 0;
+        padding: 105px 16px 40px;
+    }
+
+    /* Dashboard */
+    .dashboard-header {
+        display: block;
+        margin-bottom: 27px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 36px;
+    }
+
+    .create-task-button {
+        width: 100%;
+        margin: 28px 0 0;
+    }
+
+    .status-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .status-card {
+        min-width: 0;
+        min-height: 105px;
+        padding: 16px 8px;
+    }
+
+    .status-card h2 {
+        font-size: 19px;
+    }
+
+    /* Task pages */
+    .task-page-header {
+        display: block;
+    }
+
+    .task-page-header .primary-button {
+        width: 100%;
+        margin-top: 22px;
+    }
+
+    .task-row {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .task-row time,
+    .task-row .priority-badge,
+    .task-row .status-label {
+        width: fit-content;
+        margin-left: 35px;
+    }
+
+    .task-row-actions {
+        width: fit-content;
+        margin-left: 35px;
+    }
+
+    /* Readable mobile task cards: content wraps instead of
+       degrading to short ellipses. */
+    .task-card-list {
+        gap: 14px;
+    }
+
+    .task-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "status priority"
+            "main main"
+            "due actions";
+        align-items: start;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 135px;
+        padding: 16px 18px;
+        gap: 13px 12px;
+        border-radius: 22px;
+    }
+
+    .task-card-status {
+        grid-area: status;
+        align-self: center;
+        justify-self: start;
+        min-width: 0;
+        font-size: 15px;
+        line-height: 1.2;
+    }
+
+    .task-card .priority-badge {
+        grid-area: priority;
+        align-self: center;
+        justify-self: end;
+        min-width: 84px;
+        padding: 5px 9px;
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .task-card-main {
+        grid-area: main;
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        min-width: 0;
+        gap: 10px;
+    }
+
+    .task-card-information {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .task-title-button {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        overflow: visible;
+        font-size: 17px;
+        line-height: 1.3;
+        text-overflow: clip;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .task-card-information p {
+        display: block;
+        width: 100%;
+        margin: 6px 0 0;
+        overflow: visible;
+        font-size: 13px;
+        line-height: 1.4;
+        text-overflow: clip;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .task-check-circle {
+        width: 28px;
+        height: 28px;
+        flex: 0 0 28px;
+        font-size: 17px;
+    }
+
+    .task-card-due-date {
+        position: static;
+        grid-area: due;
+        align-self: center;
+        justify-self: start;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        margin: 0;
+        transform: none;
+        text-align: left;
+    }
+
+    .task-card-due-date span,
+    .task-card-due-date strong {
+        font-size: 12px;
+        white-space: normal;
+    }
+
+    .task-card-due-date.is-overdue strong {
+        font-size: 12px;
+    }
+
+    .task-card-actions {
+        grid-area: actions;
+        align-self: center;
+        justify-self: end;
+        gap: 6px;
+    }
+
+    .task-card-action {
+        width: 34px;
+        height: 34px;
+        font-size: 21px;
+    }
+
+    /* Date groups */
+    .task-date-groups {
+        gap: 26px;
+    }
+
+    .task-date-today {
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    .task-date-heading {
+        align-items: flex-start;
+    }
+
+    .task-date-heading h2 {
+        font-size: 18px;
+    }
+
+    .task-date-count {
+        font-size: 12px;
+    }
+
+    /* Profile */
+    .profile-heading {
+        justify-content: flex-start;
+        gap: 18px;
+        margin: 25px 0 30px;
+    }
+
+    .profile-heading h1 {
+        font-size: 38px;
+    }
+
+    .profile-icon {
+        font-size: 70px;
+    }
+
+    .profile-forms {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-panel {
+        padding: 24px 20px;
+    }
+
+    /* Search / filters */
+    .task-search-toolbar {
+        gap: 8px;
+    }
+
+    .task-filter-panel {
+        position: static;
+        width: 100%;
+        margin-top: 10px;
+        box-shadow: none;
+    }
+
+    .filter-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .filter-apply-button,
+    .clear-filter-button {
+        width: 100%;
+    }
+
+    .history-search-form .task-search-box {
+        max-width: none;
+    }
+
+    /* Modals */
+    .task-modal,
+    .task-details-modal {
+        width: calc(100% - 24px);
+        max-width: none;
+        margin: 12px auto;
+    }
+
+    .task-modal .modal-header {
+        padding: 20px 20px 15px;
+    }
+
+    .task-modal .modal-body {
+        padding: 20px;
+    }
+
+    .task-details-modal .modal-content {
+        padding: 22px 20px 28px;
+        border-radius: 18px;
+    }
+
+    .task-modal .modal-footer,
+    .task-edit-actions,
+    .delete-task-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .task-modal .modal-footer {
+        padding: 16px 20px 20px;
+    }
+
+    .task-edit-actions {
+        margin-top: 22px;
+    }
+
+    .delete-task-actions {
+        margin-top: 25px;
+    }
+
+    .task-modal .primary-button,
+    .task-modal .secondary-button,
+    .task-edit-actions .primary-button,
+    .task-edit-actions .secondary-button,
+    .delete-task-actions .secondary-button,
+    .delete-task-actions .delete-button {
+        width: 100%;
+        min-width: 0;
+        min-height: 40px;
+        padding: 8px 12px;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    /* Notifications */
     .notification-panel {
         position: fixed;
         top: 80px;
@@ -2706,185 +2900,11 @@ body {
 }
 
 /* =========================================================
-   Tablet Dashboard
-   ========================================================= */
-
-@media (min-width: 768px) and (max-width: 1100px) {
-
-    .status-grid {
-        grid-template-columns: repeat(
-            2,
-            minmax(0, 1fr)
-        );
-
-        gap: 14px;
-    }
-
-    .status-card {
-        min-width: 0;
-    }
-
-}
-
-/* =========================================================
-   Small Phone Task Cards
-   320px - 390px
+   Small Phone
+   Up to 390px
    ========================================================= */
 
 @media (max-width: 390px) {
-
-    .task-card {
-        grid-template-columns: minmax(0, 1fr) auto;
-
-        grid-template-areas:
-            "status priority"
-            "main main"
-            "due actions";
-
-        gap: 14px 12px;
-
-        min-height: 0;
-        padding: 16px;
-
-        border-radius: 22px;
-    }
-
-
-    /* Status */
-
-    .task-card-status {
-        font-size: 15px;
-    }
-
-    .task-overdue-status {
-        padding: 5px 9px;
-
-        font-size: 11px;
-    }
-
-
-    /* Priority */
-
-    .task-card .priority-badge {
-        min-width: 88px;
-
-        padding: 5px 10px;
-
-        font-size: 12px;
-    }
-
-
-    /* Main task information */
-
-    .task-card-main {
-        width: 100%;
-
-        gap: 12px;
-    }
-
-    .task-card-information {
-        flex: 1;
-
-        min-width: 0;
-    }
-
-
-    /* Allow the title to use two lines instead of
-       shrinking to one visible character */
-
-    .task-title-button {
-        display: -webkit-box;
-
-        width: 100%;
-        max-width: 100%;
-
-        overflow: hidden;
-
-        font-size: 14px;
-        line-height: 1.2;
-
-        white-space: normal;
-
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-    }
-
-
-    /* Description */
-
-    .task-card-information p {
-        display: -webkit-box;
-
-        margin-top: 6px;
-
-        overflow: hidden;
-
-        font-size: 13px;
-        line-height: 1.35;
-
-        white-space: normal;
-
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-    }
-
-
-    /* Completion circle */
-
-    .task-check-circle {
-        width: 28px;
-        height: 28px;
-
-        flex: 0 0 28px;
-
-        font-size: 17px;
-    }
-
-
-    /* Due date */
-
-    .task-card-due-date {
-        margin-left: 40px;
-
-        min-width: 0;
-    }
-
-    .task-card-due-date span {
-        font-size: 12px;
-
-        white-space: nowrap;
-    }
-
-    .task-card-due-date strong {
-        font-size: 12px;
-
-        white-space: nowrap;
-    }
-
-
-    /* Actions */
-
-    .task-card-actions {
-        align-self: end;
-
-        gap: 6px;
-    }
-
-    .task-card-action {
-        width: 34px;
-        height: 34px;
-
-        font-size: 21px;
-    }
-
-}
-
-/* =========================================================
-   Small Phone Profile
-   ========================================================= */
-
-@media (max-width: 390px) {
-
     .profile-page {
         width: 100%;
         max-width: 100%;
@@ -2893,45 +2913,52 @@ body {
 
     .profile-heading {
         display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
-
+        grid-template-columns: minmax(0, 1fr) 52px;
         align-items: center;
-        justify-content: stretch;
-
         gap: 12px;
-
         width: 100%;
         max-width: 100%;
-
         margin: 20px 0 26px;
     }
 
-    .profile-icon {
-        font-size: 54px;
-        line-height: 1;
-    }
-
     .profile-heading > div {
+        width: 100%;
         min-width: 0;
     }
 
     .profile-heading h1 {
-        margin-bottom: 6px;
-
-        font-size: 30px;
-        line-height: 1.1;
-
-        overflow-wrap: anywhere;
+        margin: 0 0 6px;
+        font-size: 28px;
+        line-height: 1.15;
+        word-break: normal;
+        overflow-wrap: break-word;
     }
 
     .profile-heading p {
+        margin: 0;
         font-size: 13px;
-        line-height: 1.4;
-
-        overflow-wrap: anywhere;
+        line-height: 1.45;
+        word-break: normal;
+        overflow-wrap: break-word;
     }
 
-    .profile-forms {
+    .profile-icon {
+        display: flex;
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        align-items: center;
+        justify-content: center;
+        justify-self: end;
+        overflow: visible;
+        color: var(--taskflow-purple);
+        font-size: 42px;
+        line-height: 1;
+    }
+
+    .profile-stats,
+    .profile-forms,
+    .profile-panel {
         width: 100%;
         max-width: 100%;
     }
@@ -2939,5 +2966,145 @@ body {
     .profile-panel {
         min-width: 0;
         padding: 20px 16px;
+    }
+
+    /* Slightly tighter cards without hiding content. */
+    .task-card {
+        padding: 14px;
+        gap: 12px 10px;
+        border-radius: 18px;
+    }
+
+    .task-card-status {
+        font-size: 13px;
+    }
+
+    .task-overdue-status {
+        padding: 4px 7px;
+        font-size: 10px;
+    }
+
+    .task-card .priority-badge {
+        min-width: 72px;
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .task-title-button {
+        font-size: 16px;
+    }
+
+    .task-card-information p {
+        font-size: 12px;
+    }
+
+    .task-card-due-date span,
+    .task-card-due-date strong,
+    .task-card-due-date.is-overdue strong {
+        font-size: 11px;
+    }
+
+    .task-card-action {
+        width: 32px;
+        height: 32px;
+        font-size: 19px;
+    }
+}
+
+/* =========================================================
+   Extra-Small Phone
+   Up to 340px
+   ========================================================= */
+
+@media (max-width: 340px) {
+    .app-main {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .auth-main {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .auth-card {
+        padding: 34px 24px 28px;
+    }
+
+    /* Give due date and actions their own rows so the card
+       never feels crowded at 320px. */
+    .task-card {
+        grid-template-areas:
+            "status priority"
+            "main main"
+            "due due"
+            "actions actions";
+        min-height: 0;
+    }
+
+    .task-card-due-date {
+        width: 100%;
+    }
+
+    .task-card-actions {
+        width: 100%;
+        justify-self: stretch;
+        justify-content: flex-end;
+    }
+
+    .task-date-groups {
+        gap: 22px;
+    }
+
+    .task-date-today {
+        padding: 8px;
+        border-radius: 14px;
+    }
+
+    .task-date-heading {
+        gap: 8px;
+    }
+
+    .task-date-heading h2 {
+        font-size: 16px;
+        line-height: 1.25;
+    }
+
+    .task-date-count {
+        font-size: 10px;
+    }
+
+    .dashboard-section-heading {
+        gap: 8px;
+    }
+
+    .dashboard-section-heading h2 {
+        font-size: 20px;
+    }
+
+    .dashboard-section-heading a {
+        font-size: 12px;
+    }
+
+    .task-modal .modal-footer,
+    .task-edit-actions,
+    .delete-task-actions {
+        gap: 8px;
+    }
+
+    .task-modal .modal-footer {
+        padding: 12px 14px 16px;
+    }
+
+    .task-modal .primary-button,
+    .task-modal .secondary-button,
+    .task-edit-actions .primary-button,
+    .task-edit-actions .secondary-button,
+    .delete-task-actions .secondary-button,
+    .delete-task-actions .delete-button {
+        min-height: 38px;
+        padding: 8px 8px;
+        font-size: 13px;
+        white-space: nowrap;
     }
 }
