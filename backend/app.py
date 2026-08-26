@@ -37,71 +37,51 @@ def create_app(test_config=None):
         database=os.getenv("DB_NAME"),
     )
 
-
     # -------------------------------------------------
     # APPLICATION CONFIGURATION
     # -------------------------------------------------
 
-    app.config["SECRET_KEY"] = os.getenv(
-        "SECRET_KEY",
-        "taskflow-development-key",
+    app.config.update(
+        SECRET_KEY=os.environ.get(
+            "SECRET_KEY"
+        ),
+        SQLALCHEMY_DATABASE_URI=database_url,
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+
+        # Session security
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
+        PERMANENT_SESSION_LIFETIME=timedelta(
+            hours=8
+        ),
+
+        # Remember-me security
+        REMEMBER_COOKIE_HTTPONLY=True,
+        REMEMBER_COOKIE_SAMESITE="Lax",
+        REMEMBER_COOKIE_DURATION=timedelta(
+            days=7
+        ),
     )
-
-    app.config[
-        "SQLALCHEMY_DATABASE_URI"
-    ] = database_url
-
-    app.config[
-        "SQLALCHEMY_TRACK_MODIFICATIONS"
-    ] = False
-
-
-    # Session security
-
-    app.config[
-        "SESSION_COOKIE_HTTPONLY"
-    ] = True
-
-    app.config[
-        "SESSION_COOKIE_SAMESITE"
-    ] = "Lax"
-
-    app.config[
-        "PERMANENT_SESSION_LIFETIME"
-    ] = timedelta(
-        hours=8
-    )
-
-
-    # Remember-me cookie
-
-    app.config[
-        "REMEMBER_COOKIE_HTTPONLY"
-    ] = True
-
-    app.config[
-        "REMEMBER_COOKIE_SAMESITE"
-    ] = "Lax"
-
-    app.config[
-        "REMEMBER_COOKIE_DURATION"
-    ] = timedelta(
-        days=7
-    )
-
 
     # -------------------------------------------------
     # TEST CONFIGURATION
     #
-    # Pytest can replace PostgreSQL with a temporary
-    # SQLite database before SQLAlchemy is initialized.
+    # Pytest replaces PostgreSQL with a temporary
+    # SQLite database and supplies its own SECRET_KEY.
     # -------------------------------------------------
 
-    if test_config is not None:
+    if test_config:
         app.config.update(
             test_config
         )
 
+    # SECRET_KEY must be supplied by the environment
+    # in normal use, or by test_config during tests.
+    if not app.config.get("SECRET_KEY"):
+        raise RuntimeError(
+            "SECRET_KEY is not configured. "
+            "Set SECRET_KEY in the environment."
+        )
 
     # -------------------------------------------------
     # EXTENSIONS
@@ -115,7 +95,6 @@ def create_app(test_config=None):
         app,
         db,
     )
-
 
     # -------------------------------------------------
     # FLASK-LOGIN
@@ -132,7 +111,6 @@ def create_app(test_config=None):
     login_manager.login_message_category = (
         "warning"
     )
-
 
     # -------------------------------------------------
     # BLUEPRINTS
@@ -159,7 +137,6 @@ def create_app(test_config=None):
         task_bp
     )
 
-
     # -------------------------------------------------
     # HEALTH CHECK
     # -------------------------------------------------
@@ -170,7 +147,6 @@ def create_app(test_config=None):
             status="success",
             message="TaskFlow is running",
         )
-
 
     # -------------------------------------------------
     # DATABASE HEALTH CHECK
@@ -197,7 +173,6 @@ def create_app(test_config=None):
                 message=str(error),
             ), 500
 
-
     # -------------------------------------------------
     # GLOBAL NOTIFICATIONS
     # -------------------------------------------------
@@ -206,14 +181,13 @@ def create_app(test_config=None):
     def inject_notifications():
         return get_notifications()
 
-
     return app
 
 
-app = create_app()
-
 
 if __name__ == "__main__":
+    app = create_app()
+
     debug_enabled = (
         os.environ.get(
             "FLASK_DEBUG",

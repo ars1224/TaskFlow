@@ -175,37 +175,6 @@ def user_a_task(
     return task_id
 
 
-@pytest.fixture()
-def user_a_task(
-    app,
-    users,
-):
-    today = datetime.now(
-        NZ_TIMEZONE
-    ).date()
-
-    with app.app_context():
-
-        task = Task(
-            title="TEST - User A Private Task",
-            description=(
-                "This task belongs only "
-                "to User A."
-            ),
-            scheduled_date=today,
-            due_date=today,
-            status="on-going",
-            priority="high",
-            user_id=users["user_a_id"],
-        )
-
-        db.session.add(task)
-        db.session.commit()
-
-        task_id = task.id
-
-    return task_id
-
 
 @pytest.fixture()
 def login_user_b(

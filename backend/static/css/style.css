@@ -2878,3 +2878,66 @@ body {
     }
 
 }
+
+/* =========================================================
+   Small Phone Profile
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .profile-page {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .profile-heading {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+
+        align-items: center;
+        justify-content: stretch;
+
+        gap: 12px;
+
+        width: 100%;
+        max-width: 100%;
+
+        margin: 20px 0 26px;
+    }
+
+    .profile-icon {
+        font-size: 54px;
+        line-height: 1;
+    }
+
+    .profile-heading > div {
+        min-width: 0;
+    }
+
+    .profile-heading h1 {
+        margin-bottom: 6px;
+
+        font-size: 30px;
+        line-height: 1.1;
+
+        overflow-wrap: anywhere;
+    }
+
+    .profile-heading p {
+        font-size: 13px;
+        line-height: 1.4;
+
+        overflow-wrap: anywhere;
+    }
+
+    .profile-forms {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .profile-panel {
+        min-width: 0;
+        padding: 20px 16px;
+    }
+}
