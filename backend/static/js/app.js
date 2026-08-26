@@ -455,3 +455,42 @@ if (notificationButton && notificationPanel) {
     );
 
 }
+
+/* =========================================================
+   TASK LIST SEARCH
+   ========================================================= */
+
+const taskFilterForm =
+    document.querySelector("#taskFilterForm");
+
+const taskSearchInput =
+    document.querySelector("#taskSearchInput");
+
+let taskSearchTimer = null;
+
+
+if (taskFilterForm && taskSearchInput) {
+
+    taskSearchInput.addEventListener(
+        "input",
+        () => {
+
+            clearTimeout(taskSearchTimer);
+
+            /*
+             * Wait briefly so we do not reload
+             * after every single keystroke.
+             */
+            taskSearchTimer = setTimeout(
+                () => {
+
+                    taskFilterForm.requestSubmit();
+
+                },
+                400
+            );
+
+        }
+    );
+
+}

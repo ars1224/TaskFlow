@@ -48,29 +48,31 @@
             <nav class="sidebar-navigation" aria-label="Main navigation">
                 <div class="notification-wrapper">
 
-    <button
-        type="button"
-        class="notification-button"
-        id="notificationButton"
-        aria-label="Notifications"
-        aria-expanded="false"
-    >
+                <button
+                    type="button"
+                    class="sidebar-link notification-nav-button"
+                    id="notificationButton"
+                    aria-label="Notifications"
+                    aria-expanded="false"
+                >
+                    <span class="notification-icon-wrap">
 
-        <i class="bi bi-bell"></i>
+                        <i class="bi bi-bell"></i>
 
-        {% if notification_count > 0 %}
+                        {% if notification_count > 0 %}
+                            <span class="notification-counter">
+                                {% if notification_count > 99 %}
+                                    99+
+                                {% else %}
+                                    {{ notification_count }}
+                                {% endif %}
+                            </span>
+                        {% endif %}
 
-            <span class="notification-counter">
-                {% if notification_count > 99 %}
-                    99+
-                {% else %}
-                    {{ notification_count }}
-                {% endif %}
-            </span>
+                    </span>
 
-        {% endif %}
-
-    </button>
+                    <span>Notifications</span>
+                </button>
 
 
     <!-- DROPDOWN -->
@@ -218,7 +220,7 @@
                 </a>
 
                 <a
-                    class="sidebar-link {% if request.endpoint and request.endpoint.startswith('tasks.') %}active{% endif %}"
+                    class="sidebar-link {% if request.endpoint == 'tasks.list_tasks' %}active{% endif %}"
                     href="{{ url_for('tasks.list_tasks') }}"
                 >
                     <i class="bi bi-list-task"></i>

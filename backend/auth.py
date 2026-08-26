@@ -1,5 +1,20 @@
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
-from flask_login import current_user, login_required, login_user, logout_user
+from flask import (
+    Blueprint,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+
+from flask_login import (
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
@@ -85,7 +100,12 @@ def login():
 @login_required
 def logout():
     logout_user()
-    session.clear()
 
-    flash("You have been logged out.", "info")
-    return redirect(url_for("auth.login"))
+    flash(
+        "You have been logged out.",
+        "info",
+    )
+
+    return redirect(
+        url_for("auth.login")
+    )

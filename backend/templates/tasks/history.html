@@ -8,51 +8,44 @@
 
     <!-- PAGE HEADER -->
     <header class="task-page-header">
-
         <div>
             <h1>Task History</h1>
-
-            <p>
-                Review your previous tasks.
-            </p>
+            <p>Review your previous tasks.</p>
         </div>
-
     </header>
 
+
     <!-- HISTORY SEARCH -->
-<form
-    method="GET"
-    action="{{ url_for('tasks.task_history') }}"
-    class="history-search-form"
->
+    <form
+        method="GET"
+        action="{{ url_for('tasks.task_history') }}"
+        class="history-search-form"
+    >
+        <div class="task-search-box">
 
-    <div class="task-search-box">
+            <i class="bi bi-search"></i>
 
-        <i class="bi bi-search"></i>
-
-        <input
-            type="search"
-            name="q"
-            value="{{ search }}"
-            placeholder="Search task history..."
-            aria-label="Search task history by title"
-        >
-
-        {% if search %}
-
-            <a
-                href="{{ url_for('tasks.task_history') }}"
-                class="history-search-clear"
-                aria-label="Clear search"
+            <input
+                type="search"
+                name="q"
+                value="{{ search }}"
+                placeholder="Search task history..."
+                aria-label="Search task history by title"
             >
-                <i class="bi bi-x-lg"></i>
-            </a>
 
-        {% endif %}
+            {% if search %}
+                <a
+                    href="{{ url_for('tasks.task_history') }}"
+                    class="history-search-clear"
+                    aria-label="Clear search"
+                >
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            {% endif %}
 
-    </div>
+        </div>
+    </form>
 
-</form>
 
     <!-- HISTORY -->
     <section class="task-date-groups">
@@ -63,17 +56,12 @@
 
                 <section class="task-date-section history-date-section">
 
-                    <!-- DATE -->
+                    <!-- DATE HEADER -->
                     <header class="task-date-heading">
 
-                        <div>
-
-                            <h2>
-                                {{ task_date.strftime("%A, %d %B %Y") }}
-                            </h2>
-
-                        </div>
-
+                        <h2>
+                            {{ task_date.strftime("%A, %d %B %Y") }}
+                        </h2>
 
                         <span class="task-date-count">
                             {{ date_tasks|length }}
@@ -83,7 +71,7 @@
                     </header>
 
 
-                    <!-- TASKS -->
+                    <!-- TASK CARDS -->
                     <div class="task-card-list">
 
                         {% for task in date_tasks %}
@@ -96,21 +84,24 @@
                                 <div class="task-card-status">
 
                                     {% if task.status == "completed" %}
-
                                         Finished
 
                                     {% elif task.status == "dropped" %}
-
                                         Dropped
 
-                                    {% elif task.due_date < today %}
-
-                                        Incomplete
-
                                     {% else %}
+                                        Incomplete
+                                    {% endif %}
 
-                                        {{ task.status|replace("-", " ")|title }}
 
+                                    <!-- OVERDUE IS SEPARATE FROM STATUS -->
+                                    {% if
+                                        task.status not in ["completed", "dropped"]
+                                        and task.due_date < today
+                                    %}
+                                        <span class="overdue-badge">
+                                            Overdue
+                                        </span>
                                     {% endif %}
 
                                 </div>
@@ -124,7 +115,7 @@
                                 </span>
 
 
-                                <!-- TASK INFO -->
+                                <!-- TASK INFORMATION -->
                                 <div class="task-card-main">
 
                                     <!-- READ-ONLY STATUS CIRCLE -->
@@ -132,11 +123,9 @@
                                         class="
                                             task-check-circle
                                             history-task-circle
-
                                             {% if task.status == 'completed' %}
                                                 is-completed
                                             {% endif %}
-
                                             {% if task.status == 'dropped' %}
                                                 is-dropped
                                             {% endif %}
@@ -149,17 +138,6 @@
 
                                         {% elif task.status == "dropped" %}
                                             <i class="bi bi-x-lg"></i>
-                                        {% endif %}
-
-                                        {% if
-                                            task.due_date < today
-                                            and task.status not in ["completed", "dropped"]
-                                        %}
-
-                                            <span class="overdue-badge">
-                                                Overdue
-                                            </span>
-
                                         {% endif %}
 
                                     </span>
@@ -178,17 +156,14 @@
 
 
                                         {% if task.description %}
-
                                             <p>
                                                 {{ task.description }}
                                             </p>
 
                                         {% else %}
-
                                             <p class="task-no-description">
                                                 No description
                                             </p>
-
                                         {% endif %}
 
                                     </div>
@@ -199,9 +174,7 @@
                                 <!-- DUE DATE -->
                                 <div class="task-card-due-date">
 
-                                    <span>
-                                        Due Date
-                                    </span>
+                                    <span>Due Date</span>
 
                                     <strong>
                                         {{ task.due_date.strftime("%d %b %Y") }}
@@ -210,25 +183,30 @@
                                 </div>
 
 
-                                <!-- HISTORY INDICATOR -->
+                                <!-- ACTIONS -->
                                 <div class="task-card-actions">
 
+                                    <!-- VIEW DETAILS -->
                                     <button
                                         type="button"
                                         class="task-card-action history-details-action"
                                         data-bs-toggle="modal"
                                         data-bs-target="#taskDetailsModal{{ task.id }}"
                                         aria-label="View {{ task.title }}"
+                                        title="View details"
                                     >
                                         <i class="bi bi-eye"></i>
                                     </button>
 
+
+                                    <!-- REVIEW -->
                                     <button
                                         type="button"
-                                        class="task-card-action"
+                                        class="task-card-action history-review-action"
                                         data-bs-toggle="modal"
                                         data-bs-target="#taskReviewModal{{ task.id }}"
                                         aria-label="Review {{ task.title }}"
+                                        title="Review task"
                                     >
                                         <i class="bi bi-journal-text"></i>
                                     </button>
@@ -238,10 +216,12 @@
                             </article>
 
 
-                            <!-- DETAILS MODAL -->
+                            <!--
+                                These MUST stay inside the task loop because
+                                both partials use the current `task`.
+                            -->
                             {% include "tasks/_details_modal.html" %}
                             {% include "tasks/_review_modal.html" %}
-
 
                         {% endfor %}
 
@@ -252,47 +232,45 @@
             {% endfor %}
 
 
-       {% else %}
-
-    <div class="empty-task-list history-empty-state">
-
-        {% if search %}
-
-            <i class="bi bi-search"></i>
-
-            <h3>
-                No history tasks found
-            </h3>
-
-            <p>
-                No previous tasks match
-                "<strong>{{ search }}</strong>".
-            </p>
-
-            <a
-                href="{{ url_for('tasks.task_history') }}"
-                class="primary-button"
-            >
-                Clear Search
-            </a>
-
         {% else %}
 
-            <i class="bi bi-clock-history"></i>
+            <!-- EMPTY STATE -->
+            <div class="empty-task-list history-empty-state">
 
-            <h3>
-                No task history yet
-            </h3>
+                {% if search %}
 
-            <p>
-                Tasks will appear here after their scheduled day has passed.
-            </p>
+                    <i class="bi bi-search"></i>
+
+                    <h3>No history tasks found</h3>
+
+                    <p>
+                        No previous tasks match
+                        "<strong>{{ search }}</strong>".
+                    </p>
+
+                    <a
+                        href="{{ url_for('tasks.task_history') }}"
+                        class="primary-button"
+                    >
+                        Clear Search
+                    </a>
+
+                {% else %}
+
+                    <i class="bi bi-clock-history"></i>
+
+                    <h3>No task history yet</h3>
+
+                    <p>
+                        Tasks will appear here after their
+                        scheduled day has passed.
+                    </p>
+
+                {% endif %}
+
+            </div>
 
         {% endif %}
-
-    </div>
-
-{% endif %}
 
     </section>
 

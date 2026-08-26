@@ -7,52 +7,86 @@ from extensions import db, login_manager
 
 
 class User(UserMixin, db.Model):
-
-    tasks = db.relationship(
-    "Task",
-    back_populates="owner",
-    cascade="all, delete-orphan",
-    lazy="select",
-)
-    
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(120), nullable=False)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
+
+    full_name = db.Column(
+        db.String(120),
+        nullable=False,
+    )
+
     email = db.Column(
         db.String(255),
         unique=True,
         nullable=False,
         index=True,
     )
-    password_hash = db.Column(db.String(255), nullable=False)
+
+    password_hash = db.Column(
+        db.String(255),
+        nullable=False,
+    )
+
     created_at = db.Column(
         db.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
 
+    tasks = db.relationship(
+        "Task",
+        back_populates="owner",
+        cascade="all, delete-orphan",
+        lazy="select",
+    )
+
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(
+            password
+        )
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(
+            self.password_hash,
+            password,
+        )
+
 
 class Task(db.Model):
     __tablename__ = "tasks"
 
     __table_args__ = (
         db.CheckConstraint(
-            "status IN ('yet-to-do', 'on-going', 'completed', 'dropped')",
+            """
+            status IN (
+                'yet-to-do',
+                'on-going',
+                'completed',
+                'dropped'
+            )
+            """,
             name="ck_tasks_status",
         ),
         db.CheckConstraint(
-            "priority IN ('low', 'medium', 'high')",
+            """
+            priority IN (
+                'low',
+                'medium',
+                'high'
+            )
+            """,
             name="ck_tasks_priority",
         ),
     )
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
 
     title = db.Column(
         db.String(150),
@@ -65,9 +99,9 @@ class Task(db.Model):
     )
 
     scheduled_date = db.Column(
-    db.Date,
-    nullable=False,
-    index=True,
+        db.Date,
+        nullable=False,
+        index=True,
     )
 
     due_date = db.Column(
@@ -125,7 +159,10 @@ class Task(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey("users.id", ondelete="CASCADE"),
+        db.ForeignKey(
+            "users.id",
+            ondelete="CASCADE",
+        ),
         nullable=False,
         index=True,
     )
@@ -135,9 +172,13 @@ class Task(db.Model):
         back_populates="tasks",
     )
 
+
 @login_manager.user_loader
 def load_user(user_id):
     try:
-        return db.session.get(User, int(user_id))
+        return db.session.get(
+            User,
+            int(user_id),
+        )
     except (TypeError, ValueError):
         return None

@@ -13,12 +13,44 @@
             <div class="task-details-top">
 
                 <span
-                    class="task-details-status status-{{ task.status }}"
-                >
-                    {% if task.status == "completed" %}
-                        Finished
-                    {% else %}
-                        {{ task.status|replace("-", " ")|title }}
+                    class="
+                        task-details-status
+                        {% if task.status == 'completed' %}
+                            status-completed
+                        {% elif task.status == 'dropped' %}
+                                status-dropped
+                        {% elif request.endpoint == 'tasks.task_history' %}
+                            status-incomplete
+                        {% else %}
+                            status-{{ task.status }}
+                        {% endif %}
+                        "
+                    >
+                        {% if task.status == "completed" %}
+                            Finished
+
+                        {% elif task.status == "dropped" %}
+                            Dropped
+
+                        {% elif request.endpoint == "tasks.task_history" %}
+                            Incomplete
+
+                        {% else %}
+                            {{ task.status|replace("-", " ")|title }}
+                        {% endif %}
+                    </span>
+
+
+                    {% if
+                        request.endpoint == "tasks.task_history"
+                        and task.status not in ["completed", "dropped"]
+                        and task.due_date < today
+                    %}
+
+                        <span class="overdue-badge">
+                            Overdue
+                        </span>
+
                     {% endif %}
                 </span>
 

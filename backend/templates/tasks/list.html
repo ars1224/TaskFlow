@@ -46,9 +46,11 @@
             <input
                 type="search"
                 name="q"
+                id="taskSearchInput"
                 value="{{ search }}"
                 placeholder="Search tasks..."
                 aria-label="Search tasks by title"
+                autocomplete="off"
             >
 
         </div>
@@ -237,51 +239,51 @@
 </form>
 
     <!-- TASKS GROUPED BY SCHEDULED DATE -->
-    <section class="task-date-groups">
+    <!-- TASKS GROUPED BY ACTIVITY DATE -->
+<section class="task-date-groups">
 
-        {% if tasks %}
+    {% if task_groups %}
 
-            {% for task_date, date_tasks in tasks|groupby("scheduled_date") %}
+        {% for task_date, date_tasks in task_groups %}
 
-                <section
-                    class="
-                        task-date-section
+            <section
+                class="
+                    task-date-section
+                    {% if task_date == today %}
+                        task-date-today
+                    {% endif %}
+                "
+            >
+
+                <!-- DATE HEADER -->
+                <header class="task-date-heading">
+
+                    <div>
+
                         {% if task_date == today %}
-                            task-date-today
+                            <span class="today-indicator">
+                                Today
+                            </span>
                         {% endif %}
-                    "
-                >
 
-                    <!-- DATE HEADER -->
-                    <header class="task-date-heading">
+                        <h2>
+                            {{ task_date.strftime("%A, %d %B %Y") }}
+                        </h2>
 
-                        <div>
+                    </div>
 
-                            {% if task_date == today %}
-                                <span class="today-indicator">
-                                    Today
-                                </span>
-                            {% endif %}
+                    <span class="task-date-count">
+                        {{ date_tasks|length }}
+                        task{% if date_tasks|length != 1 %}s{% endif %}
+                    </span>
 
-                            <h2>
-                                {{ task_date.strftime("%A, %d %B %Y") }}
-                            </h2>
-
-                        </div>
+                </header>
 
 
-                        <span class="task-date-count">
-                            {{ date_tasks|length }}
-                            task{% if date_tasks|length != 1 %}s{% endif %}
-                        </span>
+                <!-- TASK CARDS -->
+                <div class="task-card-list">
 
-                    </header>
-
-
-                    <!-- TASK CARDS -->
-                    <div class="task-card-list">
-
-                        {% for task in date_tasks %}
+                    {% for task in date_tasks %}
 
                             <article
                                 class="task-card task-card-{{ task.status }}"
@@ -291,9 +293,23 @@
                                 <div class="task-card-status">
 
                                     {% if task.status == "completed" %}
+
                                         Finished
+
+                                    {% elif task.status == "dropped" %}
+
+                                        Dropped
+
+                                    {% elif task.due_date < today %}
+
+                                        <span class="task-overdue-status">
+                                            Overdue
+                                        </span>
+
                                     {% else %}
+
                                         {{ task.status|replace("-", " ")|title }}
+
                                     {% endif %}
 
                                 </div>
@@ -384,11 +400,19 @@
 
 
                                 <!-- DUE DATE -->
-                                <div class="task-card-due-date">
+                                <div
+                                    class="
+                                        task-card-due-date
+                                        {% if
+                                            task.due_date < today
+                                            and task.status not in ['completed', 'dropped']
+                                        %}
+                                            is-overdue
+                                        {% endif %}
+                                    "
+                                >
 
-                                    <span>
-                                        Due Date
-                                    </span>
+                                    <span>Due Date</span>
 
                                     <strong>
                                         {{ task.due_date.strftime("%d %b %Y") }}

@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import case
+from sqlalchemy import and_, case, or_
 from sqlalchemy.exc import SQLAlchemyError
 
 from extensions import db
@@ -31,30 +31,107 @@ def get_today():
     return datetime.now(NZ_TIMEZONE).date()
 
 
-def get_today_tasks():
-    priority_order = case(
-        (Task.priority == "high", 1),
-        (Task.priority == "medium", 2),
-        else_=3,
+def get_day_bounds(day):
+    start = datetime.combine(
+        day,
+        time.min,
+        tzinfo=NZ_TIMEZONE,
     )
 
-    return db.session.scalars(
-        db.select(Task)
-        .where(
-            Task.user_id == current_user.id,
-            Task.scheduled_date == get_today(),
+    end = start + timedelta(days=1)
+
+    return start, end
+
+
+def get_task_activity_date(task):
+    # Finished tasks belong to the day
+    # they were actually completed.
+    if (
+        task.status == "completed"
+        and task.completed_at is not None
+    ):
+        completed_at = task.completed_at
+
+        if completed_at.tzinfo is not None:
+            completed_at = completed_at.astimezone(
+                NZ_TIMEZONE
+            )
+
+        return completed_at.date()
+
+    # Active and dropped tasks continue using
+    # their planned scheduled date.
+    return task.scheduled_date
+
+
+def build_task_groups(tasks, today):
+    groups = {}
+
+    priority_rank = {
+        "high": 1,
+        "medium": 2,
+        "low": 3,
+    }
+
+    for task in tasks:
+        activity_date = get_task_activity_date(
+            task
         )
-        .order_by(
-            priority_order,
-            Task.created_at.desc(),
+
+        groups.setdefault(
+            activity_date,
+            [],
+        ).append(task)
+
+    # Priority order inside each date.
+    for date_tasks in groups.values():
+        date_tasks.sort(
+            key=lambda task: (
+                priority_rank.get(
+                    task.priority,
+                    4,
+                ),
+                task.due_date,
+                -task.id,
+            )
         )
-    ).all()
+
+    def group_sort_key(item):
+        task_date = item[0]
+
+        # Today always first.
+        if task_date == today:
+            return (
+                0,
+                0,
+            )
+
+        # Carry-over/overdue dates next.
+        # Most recent first.
+        if task_date < today:
+            return (
+                1,
+                -task_date.toordinal(),
+            )
+
+        # Future dates last.
+        return (
+            2,
+            task_date.toordinal(),
+        )
+
+    return sorted(
+        groups.items(),
+        key=group_sort_key,
+    )
 
 
 @task_bp.get("/")
 @login_required
 def list_tasks():
     sync_today_task_statuses()
+
+    today = get_today()
 
     search = request.args.get(
         "q",
@@ -92,8 +169,14 @@ def list_tasks():
         due_date=due_date,
     )
 
+    task_groups = build_task_groups(
+        tasks,
+        today,
+    )
+
     filters_active = any(
         [
+            search,
             selected_statuses,
             selected_priorities,
             due_date_value,
@@ -102,11 +185,18 @@ def list_tasks():
 
     return render_template(
         "tasks/list.html",
+
         tasks=tasks,
-        today=get_today(),
+        task_groups=task_groups,
+
+        today=today,
         status_labels=STATUS_LABELS,
+
         form_data={},
-        open_create_modal=request.args.get("create") == "1",
+
+        open_create_modal=(
+            request.args.get("create") == "1"
+        ),
 
         search=search,
         selected_statuses=selected_statuses,
@@ -114,7 +204,6 @@ def list_tasks():
         selected_due_date=due_date_value,
         filters_active=filters_active,
     )
-
 
 @task_bp.post("/create")
 @login_required
@@ -174,7 +263,16 @@ def create_task():
         due_date = None
         errors.append("Please select a valid due date.")
 
-    # Scheduled date cannot be after the deadline
+    # Scheduled date cannot be in the past.
+    if (
+        scheduled_date is not None
+        and scheduled_date < get_today()
+    ):
+        errors.append(
+            "The scheduled date cannot be in the past."
+        )
+
+    # Scheduled date cannot be after due date.
     if (
         scheduled_date is not None
         and due_date is not None
@@ -188,13 +286,31 @@ def create_task():
         for error in errors:
             flash(error, "danger")
 
+        today = get_today()
+        tasks = get_all_tasks()
+
+        task_groups = build_task_groups(
+            tasks,
+            today,
+        )
+
         return render_template(
             "tasks/list.html",
-            tasks=get_all_tasks(),
-            today=get_today(),
+
+            tasks=tasks,
+            task_groups=task_groups,
+
+            today=today,
             status_labels=STATUS_LABELS,
+
             form_data=request.form,
             open_create_modal=True,
+
+            search="",
+            selected_statuses=[],
+            selected_priorities=[],
+            selected_due_date="",
+            filters_active=False,
         ), 400
 
     task = Task(
@@ -305,7 +421,16 @@ def edit_task(task_id):
             "Please select a valid due date."
         )
 
-    # Scheduled date cannot be later than deadline
+    # Scheduled date cannot be in the past.
+    if (
+        scheduled_date is not None
+        and scheduled_date < get_today()
+    ):
+        errors.append(
+            "The scheduled date cannot be in the past."
+        )
+
+    # Scheduled date cannot be after due date.
     if (
         scheduled_date is not None
         and due_date is not None
@@ -333,7 +458,7 @@ def edit_task(task_id):
     task.due_date = due_date
 
     if task.status not in {"completed", "dropped"}:
-        if scheduled_date == get_today():
+        if scheduled_date <= get_today():
             task.status = "on-going"
         else:
             task.status = "yet-to-do"
@@ -360,6 +485,7 @@ def edit_task(task_id):
         or url_for("tasks.list_tasks")
     )
 
+
 def get_all_tasks(
     search="",
     statuses=None,
@@ -367,6 +493,10 @@ def get_all_tasks(
     due_date=None,
 ):
     today = get_today()
+
+    today_start, tomorrow_start = (
+        get_day_bounds(today)
+    )
 
     statuses = statuses or []
     priorities = priorities or []
@@ -380,17 +510,61 @@ def get_all_tasks(
     query = db.select(Task).where(
         Task.user_id == current_user.id,
 
-        # Task List contains today + future only
-        Task.scheduled_date >= get_today(),
+        or_(
+            # -----------------------------------------
+            # ACTIVE TASKS
+            #
+            # They always stay on Task List,
+            # even when their scheduled date passed.
+            # -----------------------------------------
+            Task.status.in_(
+                (
+                    "yet-to-do",
+                    "on-going",
+                )
+            ),
+
+            # -----------------------------------------
+            # FINISHED TODAY
+            #
+            # The original scheduled date does not
+            # matter anymore for today's activity.
+            # -----------------------------------------
+            and_(
+                Task.status == "completed",
+                Task.completed_at >= today_start,
+                Task.completed_at < tomorrow_start,
+            ),
+
+            # Backward compatibility for any old
+            # completed task without completed_at.
+            and_(
+                Task.status == "completed",
+                Task.completed_at.is_(None),
+                Task.scheduled_date >= today,
+            ),
+
+            # -----------------------------------------
+            # DROPPED TASKS
+            #
+            # Keep the current scheduled-date rule.
+            # -----------------------------------------
+            and_(
+                Task.status == "dropped",
+                Task.scheduled_date >= today,
+            ),
+        ),
     )
 
-    # Search by title
+    # Search
     if search:
         query = query.where(
-            Task.title.ilike(f"%{search}%")
+            Task.title.ilike(
+                f"%{search}%"
+            )
         )
 
-    # Multiple status filters
+    # Status filters
     valid_statuses = [
         status
         for status in statuses
@@ -399,10 +573,12 @@ def get_all_tasks(
 
     if valid_statuses:
         query = query.where(
-            Task.status.in_(valid_statuses)
+            Task.status.in_(
+                valid_statuses
+            )
         )
 
-    # Multiple priority filters
+    # Priority filters
     valid_priorities = [
         priority
         for priority in priorities
@@ -411,24 +587,27 @@ def get_all_tasks(
 
     if valid_priorities:
         query = query.where(
-            Task.priority.in_(valid_priorities)
+            Task.priority.in_(
+                valid_priorities
+            )
         )
 
-    # Due date
+    # Due date filter
     if due_date is not None:
         query = query.where(
             Task.due_date == due_date
         )
 
-    # Always date first, then priority
     query = query.order_by(
-        Task.scheduled_date.asc(),
         priority_order,
         Task.due_date.asc(),
         Task.created_at.desc(),
     )
 
-    return db.session.scalars(query).all()
+    return db.session.scalars(
+        query
+    ).all()
+
 @task_bp.post("/<int:task_id>/delete")
 @login_required
 def delete_task(task_id):
@@ -461,6 +640,7 @@ def delete_task(task_id):
         or url_for("tasks.list_tasks")
     )
 
+
 def sync_today_task_statuses():
     today = get_today()
 
@@ -469,7 +649,7 @@ def sync_today_task_statuses():
         .where(
             Task.user_id == current_user.id,
             Task.status == "yet-to-do",
-            Task.scheduled_date == today,
+            Task.scheduled_date <= today,
         )
     ).all()
 
@@ -479,7 +659,10 @@ def sync_today_task_statuses():
     for task in tasks:
         task.status = "on-going"
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
 
 
 @task_bp.post("/<int:task_id>/toggle-complete")
@@ -506,7 +689,7 @@ def toggle_complete(task_id):
     if task.status == "completed":
         task.completed_at = None
 
-        if task.scheduled_date == get_today():
+        if task.scheduled_date <= get_today():
             task.status = "on-going"
         else:
             task.status = "yet-to-do"
@@ -531,6 +714,7 @@ def toggle_complete(task_id):
         request.referrer
         or url_for("tasks.list_tasks")
     )
+
 
 @task_bp.post("/<int:task_id>/review")
 @login_required
@@ -639,10 +823,15 @@ def review_task(task_id):
         or url_for("tasks.task_history")
     )
 
+
 @task_bp.get("/history")
 @login_required
 def task_history():
     today = get_today()
+
+    today_start, _ = get_day_bounds(
+        today
+    )
 
     search = request.args.get(
         "q",
@@ -651,37 +840,74 @@ def task_history():
 
     query = db.select(Task).where(
         Task.user_id == current_user.id,
-        Task.scheduled_date < today,
+
+        or_(
+            # Finished before today.
+            and_(
+                Task.status == "completed",
+                Task.completed_at.is_not(None),
+                Task.completed_at < today_start,
+            ),
+
+            # Old completed records which existed
+            # before completed_at was introduced.
+            and_(
+                Task.status == "completed",
+                Task.completed_at.is_(None),
+                Task.scheduled_date < today,
+            ),
+
+            # Dropped records.
+            and_(
+                Task.status == "dropped",
+                Task.scheduled_date < today,
+            ),
+        ),
     )
 
-    # Search by task title
     if search:
         query = query.where(
-            Task.title.ilike(f"%{search}%")
+            Task.title.ilike(
+                f"%{search}%"
+            )
         )
 
     history_tasks = db.session.scalars(
-        query.order_by(
-            Task.scheduled_date.desc(),
-            Task.created_at.desc(),
-        )
+        query
     ).all()
+
+    # Sort History by actual activity date.
+    history_tasks.sort(
+        key=lambda task: (
+            get_task_activity_date(task),
+            task.created_at,
+        ),
+        reverse=True,
+    )
 
     history_groups = []
 
     for task in history_tasks:
+        activity_date = (
+            get_task_activity_date(task)
+        )
+
         if (
             not history_groups
-            or history_groups[-1][0] != task.scheduled_date
+            or history_groups[-1][0]
+            != activity_date
         ):
             history_groups.append(
                 (
-                    task.scheduled_date,
+                    activity_date,
                     [task],
                 )
             )
+
         else:
-            history_groups[-1][1].append(task)
+            history_groups[-1][1].append(
+                task
+            )
 
     return render_template(
         "tasks/history.html",
