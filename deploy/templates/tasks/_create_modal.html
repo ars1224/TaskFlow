@@ -1,0 +1,212 @@
+<div
+    class="modal fade"
+    id="createTaskModal"
+    tabindex="-1"
+    aria-labelledby="createTaskModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered task-modal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2
+                    class="modal-title"
+                    id="createTaskModalLabel"
+                >
+                    Create Task
+                </h2>
+
+                <button
+                    class="btn-close"
+                    type="button"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+
+            </div>
+
+
+            <form
+                action="{{ url_for('tasks.create_task') }}"
+                method="POST"
+                data-disable-on-submit
+            >
+
+                <div class="modal-body">
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="return_to"
+                        value="{{ request.endpoint }}"
+                    >
+
+
+                    <!-- TITLE -->
+                    <div class="form-field">
+
+                        <label for="title">
+                            Task Name
+                        </label>
+
+                        <input
+                            id="title"
+                            type="text"
+                            name="title"
+                            maxlength="150"
+                            value="{{ form_data.get('title', '') }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+                    <div class="form-field">
+
+                        <label for="description">
+                            Task Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="4"
+                            maxlength="2000"
+                        >{{ form_data.get('description', '') }}</textarea>
+
+                    </div>
+
+
+                    <!-- PRIORITY -->
+                    <div class="form-field">
+
+                        <label for="priority">
+                            Priority
+                        </label>
+
+                        <select
+                            id="priority"
+                            name="priority"
+                            required
+                        >
+
+                            <option value="">
+                                Select priority
+                            </option>
+
+                            {% for value in ["low", "medium", "high"] %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if form_data.get('priority') == value %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ value|title }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- SCHEDULED DATE -->
+                    <div class="form-field">
+                        <label for="scheduled_date">
+                            When will you do this task?
+                        </label>
+
+                        <input
+                            id="scheduled_date"
+                            type="date"
+                            name="scheduled_date"
+                            value="{{ form_data.get('scheduled_date', today.isoformat()) }}"
+                            min="{{ today.isoformat() }}"
+                            data-scheduled-date
+                            data-today="{{ today.isoformat() }}"
+                            required
+                        >
+
+                        <div
+                            class="modal-field-error"
+                            data-date-error
+                            role="alert">
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="due_date">
+                            Due Date
+                        </label>
+
+                        <input
+                            id="due_date"
+                            type="date"
+                            name="due_date"
+                            value="{{ form_data.get('due_date', today.isoformat()) }}"
+                            data-due-date
+                            required
+                        >
+                    </div>
+                    
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        class="secondary-button"
+                        type="button"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        class="primary-button"
+                        type="submit"
+                    >
+                        Save Task
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- REOPEN CREATE MODAL AFTER SERVER VALIDATION ERROR -->
+{% if open_create_modal %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const modalElement =
+                document.querySelector("#createTaskModal");
+
+            if (modalElement) {
+                const modal =
+                    new bootstrap.Modal(modalElement);
+
+                modal.show();
+            }
+
+        });
+    </script>
+
+{% endif %}

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}TaskFlow{% endblock %}</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body class="{{ 'app-body' if current_user.is_authenticated else 'auth-body' }}">
+
+    {% if current_user.is_authenticated %}
+        <header class="mobile-header">
+            <button
+                id="menuButton"
+                class="menu-button"
+                type="button"
+                aria-label="Open navigation"
+                aria-controls="sidebar"
+                aria-expanded="false"
+            >
+                <i class="bi bi-list"></i>
+            </button>
+
+            <a class="mobile-logo" href="{{ url_for('main.dashboard') }}">
+                TaskFlow
+            </a>
+        </header>
+
+        <aside id="sidebar" class="sidebar">
+            <a class="sidebar-logo" href="{{ url_for('main.dashboard') }}">
+                TaskFlow
+            </a>
+
+            <nav class="sidebar-navigation" aria-label="Main navigation">
+                <div class="notification-wrapper">
+
+                <button
+                    type="button"
+                    class="sidebar-link notification-nav-button"
+                    id="notificationButton"
+                    aria-label="Notifications"
+                    aria-expanded="false"
+                >
+                    <span class="notification-icon-wrap">
+
+                        <i class="bi bi-bell"></i>
+
+                        {% if notification_count > 0 %}
+                            <span class="notification-counter">
+                                {% if notification_count > 99 %}
+                                    99+
+                                {% else %}
+                                    {{ notification_count }}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+
+                    </span>
+
+                    <span>Notifications</span>
+                </button>
+
+
+    <!-- DROPDOWN -->
+    <div
+        class="notification-panel"
+        id="notificationPanel"
+        hidden
+    >
+
+        <header class="notification-header">
+
+            <div>
+                <h3>Notifications</h3>
+
+                <span>
+                    {{ notification_count }}
+                    reminder{% if notification_count != 1 %}s{% endif %}
+                </span>
+            </div>
+
+        </header>
+
+
+        {% if notifications %}
+
+            <!-- SUMMARY -->
+            <div class="notification-summary">
+
+                {% if overdue_count %}
+                    <span class="notification-summary-overdue">
+                        {{ overdue_count }} overdue
+                    </span>
+                {% endif %}
+
+                {% if due_today_count %}
+                    <span class="notification-summary-today">
+                        {{ due_today_count }} today
+                    </span>
+                {% endif %}
+
+                {% if upcoming_count %}
+                    <span class="notification-summary-upcoming">
+                        {{ upcoming_count }} upcoming
+                    </span>
+                {% endif %}
+
+            </div>
+
+
+            <div class="notification-list">
+
+                {% for notification in notifications %}
+
+                    <div
+                        class="
+                            notification-item
+                            notification-{{ notification.type }}
+                        "
+                    >
+
+                        <div class="notification-icon">
+
+                            {% if notification.type == "overdue" %}
+
+                                <i class="bi bi-exclamation-circle"></i>
+
+                            {% elif notification.type == "today" %}
+
+                                <i class="bi bi-clock"></i>
+
+                            {% else %}
+
+                                <i class="bi bi-calendar-event"></i>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="notification-content">
+
+                            <strong>
+                                {{ notification.title }}
+                            </strong>
+
+                            <span>
+                                {{ notification.message }}
+                            </span>
+
+                        </div>
+
+
+                        <span
+                            class="
+                                notification-badge
+                                notification-badge-{{ notification.type }}
+                            "
+                        >
+
+                            {% if notification.type == "overdue" %}
+                                Overdue
+
+                            {% elif notification.type == "today" %}
+                                Today
+
+                            {% else %}
+                                Upcoming
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="notification-empty">
+
+                <i class="bi bi-check-circle"></i>
+
+                <strong>
+                    You're all caught up
+                </strong>
+
+                <span>
+                    No task reminders right now.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+                <a
+                    class="sidebar-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}"
+                    href="{{ url_for('main.dashboard') }}"
+                >
+                    <i class="bi bi-house-door"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a
+                    class="sidebar-link {% if request.endpoint == 'tasks.list_tasks' %}active{% endif %}"
+                    href="{{ url_for('tasks.list_tasks') }}"
+                >
+                    <i class="bi bi-list-task"></i>
+                    <span>Task List</span>
+                </a>
+
+                <a
+                    href="{{ url_for('tasks.task_history') }}"
+                    class="
+                        sidebar-link
+                        {% if request.endpoint == 'tasks.task_history' %}
+                            active
+                        {% endif %}
+                    "
+                >
+                    <i class="bi bi-clock-history"></i>
+
+                    <span>
+                        Task History
+                    </span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a
+                    class="sidebar-user"
+                    href="{{ url_for('profile.view_profile') }}"
+                    title="View profile"
+                >
+                    {{ current_user.full_name }}
+                </a>
+
+                <form action="{{ url_for('auth.logout') }}" method="POST">
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <button class="logout-button" type="submit">
+                        <span>Log out</span>
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+    {% endif %}
+
+    <main class="{{ 'app-main' if current_user.is_authenticated else 'auth-main' }}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div
+                            class="alert alert-{{ category }} alert-dismissible fade show"
+                            role="alert"
+                        >
+                            {{ message }}
+
+                            <button
+                                class="btn-close"
+                                type="button"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

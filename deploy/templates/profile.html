@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | TaskFlow{% endblock %}
+
+{% block content %}
+<section class="profile-page">
+    <div class="profile-heading">
+        <div>
+            <h1>Hi {{ current_user.full_name.split(' ')[0] }}!</h1>
+            <p>Today is {{ today }}</p>
+            <p class="profile-member-since">
+                <i class="bi bi-calendar3"></i>
+                Member since {{ joined_date }}
+            </p>
+        </div>
+
+        <i class="bi bi-person-circle profile-icon" aria-hidden="true"></i>
+    </div>
+
+    <div class="status-grid">
+        <article class="status-card yet-to-do">
+            <h2>Yet-to-do</h2>
+            <strong>{{ stats.yet_to_do }}</strong>
+        </article>
+
+        <article class="status-card ongoing">
+            <h2>On-Going</h2>
+            <strong>{{ stats.on_going }}</strong>
+        </article>
+
+        <article class="status-card finished">
+            <h2>Finished</h2>
+            <strong>{{ stats.completed }}</strong>
+        </article>
+
+        <article class="status-card dropped">
+            <h2>Dropped</h2>
+            <strong>{{ stats.dropped }}</strong>
+        </article>
+    </div>
+
+    <div class="profile-forms">
+        <section class="profile-panel">
+            <h2>Personal Details</h2>
+
+            <form
+                action="{{ url_for('profile.update_profile') }}"
+                method="POST"
+            >
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <div class="form-field">
+                    <label for="full_name">Full Name</label>
+                    <input
+                        id="full_name"
+                        type="text"
+                        name="full_name"
+                        value="{{ current_user.full_name }}"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value="{{ current_user.email }}"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <button class="primary-button" type="submit">
+                    Save Changes
+                </button>
+            </form>
+        </section>
+
+        <section class="profile-panel">
+            <h2>Change Password</h2>
+
+            <form
+                action="{{ url_for('profile.change_password') }}"
+                method="POST"
+            >
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <div class="form-field">
+                    <label for="current_password">Current Password</label>
+                    <input
+                        id="current_password"
+                        type="password"
+                        name="current_password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="new_password">New Password</label>
+                    <input
+                        id="new_password"
+                        type="password"
+                        name="new_password"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <input
+                        id="confirm_password"
+                        type="password"
+                        name="confirm_password"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <button class="primary-button" type="submit">
+                    Change Password
+                </button>
+            </form>
+        </section>
+    </div>
+</section>
+{% endblock %}

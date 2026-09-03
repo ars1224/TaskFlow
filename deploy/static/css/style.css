@@ -1,0 +1,3110 @@
+:root {
+    /* Main TaskFlow theme */
+    --taskflow-purple: #7a34ff;
+    --taskflow-purple-dark: #6426e6;
+
+    --sidebar-background: #f0f2f5;
+    --page-background: #ffffff;
+    --surface-background: #f0f2f5;
+
+    --text-dark: #111111;
+    --text-muted: #74777c;
+    --border-colour: #d4d7dc;
+
+   /* Dashboard status colours */
+
+    /* Yet-to-do - Violet */
+    --yet-background: #eee7ff;
+    --yet-colour: #7a34ff;
+
+    /* On-going - Yellow */
+    --ongoing-background: #fff3cd;
+    --ongoing-colour: #e3a324;
+
+    /* Finished - Green */
+    --finished-background: #e6f5df;
+    --finished-colour: #42b51f;
+
+    /* Dropped - Red */
+    --dropped-background: #ffe2e2;
+    --dropped-colour: #dc3545;
+
+    
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    color: var(--text-dark);
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--page-background);
+}
+
+/* Authentication */
+
+.auth-body {
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.auth-main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+}
+
+.flash-container {
+    width: min(100%, 520px);
+    margin: 0 auto 18px;
+}
+
+.auth-card {
+    width: min(100%, 480px);
+    padding: 48px 58px 34px;
+    background: #ffffff;
+    border: 1.5px solid var(--border-colour);
+    border-radius: 40px;
+    box-shadow: -8px 12px 10px rgba(0, 0, 0, 0.2);
+}
+
+.auth-card h1 {
+    margin: 0 0 34px;
+    font-size: 42px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.form-field {
+    margin-bottom: 18px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.form-field input {
+    width: 100%;
+    min-height: 44px;
+    padding: 9px 14px;
+    background: #ffffff;
+    border: 1.5px solid #918c8c;
+    border-radius: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-field input:focus {
+    border-color: var(--taskflow-purple);
+    box-shadow: 0 0 0 3px rgba(122, 52, 255, 0.15);
+}
+
+.primary-button {
+    display: block;
+    min-width: 160px;
+    padding: 11px 25px;
+    margin: 28px auto 0;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    background: var(--taskflow-purple);
+    border: 0;
+    border-radius: 999px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.primary-button:hover:not(:disabled) {
+    background: var(--taskflow-purple-dark);
+    transform: translateY(-1px);
+}
+
+.primary-button:disabled {
+    opacity: 0.65;
+}
+
+.auth-link {
+    margin: 28px 0 0;
+    font-weight: 700;
+    text-align: center;
+}
+
+.auth-link a {
+    color: var(--taskflow-purple);
+    text-decoration: none;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+/* Desktop application shell */
+
+.app-body {
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1000;
+    display: flex;
+    width: 250px;
+    flex-direction: column;
+    padding: 28px 26px 16px;
+    background: var(--sidebar-background);
+}
+
+.sidebar-logo,
+.mobile-logo {
+    color: var(--taskflow-purple);
+    font-size: 34px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.sidebar-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 190px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 0;
+    color: #111111;
+    font-size: 22px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.sidebar-link i {
+    width: 26px;
+    font-size: 27px;
+}
+
+.sidebar-link.active {
+    color: #111111;
+}
+
+.disabled-link {
+    opacity: 0.55;
+}
+
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: auto;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sidebar-user {
+    max-width: 105px;
+    overflow: hidden;
+    color: #111111;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.logout-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px;
+    color: #111111;
+    background: transparent;
+    border: 0;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.logout-button i {
+    font-size: 20px;
+}
+
+.app-main {
+    min-height: 100vh;
+    margin-left: 250px;
+    padding: 28px 30px 50px;
+}
+
+.mobile-header,
+.sidebar-overlay {
+    display: none;
+}
+
+/* Dashboard stays inside the viewport */
+
+
+.today-section .task-card-list {
+    scrollbar-width: thin;
+    scrollbar-color: var(--taskflow-purple) var(--surface-background);
+}
+
+.today-section .task-card-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.today-section .task-card-list::-webkit-scrollbar-track {
+    background: var(--surface-background);
+    border-radius: 999px;
+}
+
+.today-section .task-card-list::-webkit-scrollbar-thumb {
+    background: var(--taskflow-purple);
+    border-radius: 999px;
+}
+
+.today-section .task-card-list::-webkit-scrollbar-thumb:hover {
+    background: var(--taskflow-purple-dark);
+}
+
+/* Dashboard */
+
+.dashboard-progress {
+    margin-bottom: 35px;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 15px;
+}
+
+.progress-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.progress-heading h2 {
+    margin: 0 0 5px;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.progress-heading p {
+    margin: 0;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.progress-heading > strong {
+    color: var(--taskflow-purple);
+    font-size: 24px;
+}
+
+.dashboard-extra-counts {
+    display: flex;
+    gap: 20px;
+    margin-top: 12px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.dashboard-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.dashboard-section-heading h2 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.dashboard-section-heading a {
+    color: var(--taskflow-purple);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dashboard-section-heading a:hover {
+    text-decoration: underline;
+}
+
+.dashboard {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 42px;
+}
+
+.dashboard-header h1 {
+    margin: 0 0 15px;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.dashboard-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.create-task-button {
+    margin: 55px 0 0;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.status-card {
+    min-height: 105px;
+    padding: 20px 15px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.status-card h2 {
+    margin: 0 0 5px;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.status-card strong {
+    font-size: 34px;
+}
+
+.yet-to-do {
+    background: var(--yet-background);
+}
+
+.yet-to-do strong {
+    color: var(--yet-colour);
+}
+
+.ongoing {
+    background: var(--ongoing-background);
+}
+
+.ongoing strong {
+    color: var(--ongoing-colour);
+}
+
+.finished {
+    background: var(--finished-background);
+}
+
+.finished strong {
+    color: var(--finished-colour);
+}
+
+.dropped {
+    background: var(--dropped-background);
+}
+
+.dropped strong {
+    color: var(--dropped-colour);
+}
+
+.today-section > h2 {
+    margin-bottom: 20px;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.empty-task-list {
+    padding: 45px 20px;
+    border: 1px solid #222222;
+    text-align: center;
+}
+
+.empty-task-list i {
+    color: var(--taskflow-purple);
+    font-size: 36px;
+}
+
+.empty-task-list p {
+    margin: 10px 0 0;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+
+.sidebar-user:hover {
+    color: var(--taskflow-purple);
+    text-decoration: underline;
+}
+
+.profile-page {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.profile-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin: 70px 0 35px;
+}
+
+.profile-heading h1 {
+    margin: 0 0 12px;
+    font-size: 64px;
+    font-weight: 800;
+}
+
+.profile-heading p {
+    margin: 0;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.profile-icon {
+    color: var(--taskflow-purple);
+    font-size: 130px;
+    line-height: 1;
+}
+
+.profile-forms {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+}
+
+.profile-panel {
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #222222;
+    border-radius: 16px;
+}
+
+.profile-panel h2 {
+    margin: 0 0 25px;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.profile-panel .primary-button {
+    min-width: 190px;
+}
+
+
+.task-page {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.task-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.task-page-header h1 {
+    margin: 0 0 8px;
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.task-page-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.task-page-header .primary-button {
+    margin: 0;
+}
+
+
+/* =========================================================
+   Task Card Layout
+   Used by Task List and later Dashboard
+   ========================================================= */
+
+.task-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Base card */
+
+.task-card {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px 160px;
+    grid-template-areas:
+        "status due priority"
+        "main due actions";
+
+    align-items: center;
+    gap: 12px 24px;
+
+    width: 100%;
+    min-height: 165px;
+    padding: 22px 28px;
+
+    border: 2px solid;
+    border-radius: 28px;
+}
+
+/* =========================================================
+   Card Status Colours
+   ========================================================= */
+
+/* Yet-to-do */
+
+.task-card-yet-to-do {
+    background: #f3edff;
+    border-color: #cda8ff;
+}
+
+/* On-going */
+
+.task-card-on-going {
+    background: var(--ongoing-background);
+    border-color: var(--ongoing-background);
+}
+
+/* Finished */
+
+.task-card-completed {
+    background: var(--finished-background);
+    border-color: var(--finished-background);
+}
+
+
+/* Dropped */
+
+.task-card-dropped {
+    background: var(--dropped-background);
+    border-color: var(--dropped-background);
+}
+
+/* Strike out the actual task information */
+
+.task-card-dropped .task-title-button,
+.task-card-dropped .task-card-information p {
+    color: #8f343c;
+    text-decoration: line-through;
+}
+
+.task-card-dropped .task-card-due-date {
+    color: #8f343c;
+    text-decoration: line-through;
+}
+
+/* Circle becomes red */
+
+.task-card-dropped .task-check-circle {
+    border-color: #dc3545;
+    background: #e4a8a8;
+}
+
+.task-page:not(.history-page)
+.task-card-completed
+.task-card-action {
+    visibility: hidden;
+}
+
+.task-page:not(.history-page)
+.task-card-dropped
+.task-card-action {
+    visibility: hidden;
+}
+
+/* =========================================================
+   Status Heading
+   ========================================================= */
+
+.task-card-status {
+    grid-area: status;
+
+    align-self: start;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   Main Task Information
+   ========================================================= */
+
+.task-card-main {
+    grid-area: main;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 0;
+}
+
+.task-card-information {
+    min-width: 0;
+}
+
+.task-card-information p {
+    margin: 6px 0 0;
+
+    overflow: hidden;
+
+    color: #333333;
+    font-size: 16px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task-no-description {
+    color: var(--text-muted) !important;
+}
+
+
+/* Task title */
+
+.task-title-button {
+    display: inline-block;
+
+    max-width: 100%;
+    padding: 0;
+
+    overflow: hidden;
+
+    color: var(--text-dark);
+    background: transparent;
+    border: 0;
+
+    font-size: 20px;
+    font-weight: 800;
+    text-align: left;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    cursor: pointer;
+}
+
+.task-title-button:hover {
+    color: var(--taskflow-purple);
+}
+
+
+/* =========================================================
+   Completion Circle
+   ========================================================= */
+
+.task-complete-form {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.task-check-circle {
+    display: flex;
+
+    width: 25px;
+    height: 25px;
+    flex: 0 0 25px;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: #36a852;
+    background: #ffffff;
+
+    border: 2px solid #777777;
+    border-radius: 50%;
+
+    font-size: 24px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s,
+        background-color 0.2s,
+        transform 0.2s;
+}
+
+.task-check-circle:hover:not(:disabled) {
+    border-color: #36a852;
+    transform: scale(1.06);
+}
+
+.task-check-circle.is-completed {
+    color: #ffffff;
+    background: #36a852;
+    border-color: #36a852;
+}
+
+.task-check-circle.is-completed:hover {
+    background: #2d9145;
+    border-color: #2d9145;
+}
+
+.task-check-circle.is-dropped {
+    color: #dc3545;
+    background: #fff5f5;
+    border-color: #dc3545;
+
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.task-check-circle i {
+    line-height: 1;
+}
+
+
+/* =========================================================
+   Due Date
+   ========================================================= */
+
+.task-card-due-date {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    transform: translate(-50%, -50%);
+
+    text-align: center;
+}
+
+.task-card-due-date span {
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.task-card-due-date strong {
+    color: var(--text-dark);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   Priority Badge
+   ========================================================= */
+
+.task-card .priority-badge {
+    grid-area: priority;
+
+    justify-self: end;
+
+    min-width: 130px;
+    padding: 5px 15px;
+
+    border: 1px solid;
+    border-radius: 20px;
+
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+}
+
+/* Low */
+
+.task-card .priority-low {
+    color: #277644;
+
+    background: #d7f3df;
+    border-color: #55af70;
+}
+
+/* Medium */
+
+.task-card .priority-medium {
+    color: #865d00;
+
+    background: #ffe6a6;
+    border-color: #d99d14;
+}
+
+/* High */
+
+.task-card .priority-high {
+    color: #a71920;
+
+    background: #ff979c;
+    border-color: #e3232d;
+}
+
+
+/* =========================================================
+   Card Actions
+   ========================================================= */
+
+.task-card-actions {
+    grid-area: actions;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
+.task-card-action {
+    display: inline-flex;
+
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    background: rgba(255, 255, 255, 0);
+    border: 0;
+    border-radius: 8px;
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s,
+        background-color 0.2s,
+        transform 0.2s;
+}
+
+.task-card-action:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+.edit-action {
+    color: var(--taskflow-purple);
+}
+
+.edit-action:hover {
+    color: var(--taskflow-purple-dark);
+}
+
+.delete-action {
+    color: #dc3545;
+}
+
+.delete-action:hover {
+    color: #b02a37;
+}
+
+.task-list {
+    border: 1px solid #222222;
+}
+
+.task-row {
+    display: grid;
+    grid-template-columns: minmax(250px, 1fr) 120px 90px 100px;
+    align-items: center;
+    gap: 16px;
+    min-height: 78px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #222222;
+}
+
+.task-row:last-child {
+    border-bottom: 0;
+}
+
+.task-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.task-main h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.task-main p {
+    margin: 4px 0 0;
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task-status-dot {
+    width: 21px;
+    height: 21px;
+    flex: 0 0 21px;
+    border: 1.5px solid #333333;
+    border-radius: 50%;
+}
+
+.status-completed {
+    background: #58ca4f;
+}
+
+.status-on-going {
+    background: #f1cd55;
+}
+
+.status-dropped {
+    background: #da5b5b;
+}
+
+.priority-badge,
+.status-label {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.priority-low {
+    color: #277644;
+    background: #dff4e5;
+}
+
+.priority-medium {
+    color: #936900;
+    background: #fff0bd;
+}
+
+.priority-high {
+    color: #ad2929;
+    background: #ffdada;
+}
+
+.status-label {
+    background: #e3e8ff;
+}
+
+
+/* Date validation */
+
+.form-field input.date-input-error {
+    border-color: #dc3545;
+    background: #fff8f8;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12);
+}
+
+/* =========================================================
+   Shared Modal Form Controls
+   ========================================================= */
+
+.form-field select,
+.form-field textarea {
+    width: 100%;
+
+    padding: 10px 14px;
+
+    color: var(--text-dark);
+    background: #ffffff;
+
+    border: 1.5px solid #918c8c;
+    border-radius: 13px;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.form-field select {
+    min-height: 44px;
+}
+
+.form-field textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-field select:focus,
+.form-field textarea:focus {
+    border-color: var(--taskflow-purple);
+
+    box-shadow:
+        0 0 0 3px rgba(122, 52, 255, 0.15);
+}
+
+.form-field textarea::placeholder {
+    color: #8a8a8a;
+}
+
+/* Task Details Modal */
+
+.task-details-modal {
+    max-width: 520px;
+}
+
+.task-details-modal .modal-content {
+    padding: 25px 34px 35px;
+    background: #ffffff;
+    border: 1px solid #222222;
+    border-radius: 0;
+}
+
+.task-details-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.task-details-status {
+    display: inline-block;
+    min-width: 120px;
+    padding: 8px 14px;
+    font-size: 16px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.status-yet-to-do {
+    color: var(--yet-colour);
+    background: var(--yet-background);
+}
+
+.task-details-status.status-yet-to-do {
+    color: var(--yet-colour);
+    background: var(--yet-background);
+}
+
+.task-details-status.status-on-going {
+    color: var(--ongoing-colour);
+    background: var(--ongoing-background);
+}
+
+.task-details-status.status-completed {
+    color: var(--finished-colour);
+    background: var(--finished-background);
+}
+
+.task-details-status.status-dropped {
+    color: var(--dropped-colour);
+    background: var(--dropped-background);
+}
+
+.task-details-number {
+    margin: 15px 0 25px;
+    font-size: 20px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.task-details-field {
+    margin-bottom: 20px;
+}
+
+.task-details-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 800;
+}
+
+.task-details-value {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    background: var(--surface-background);
+    border: 1.5px solid var(--border-colour);
+    border-radius: 13px;
+}
+
+.task-description-value {
+    min-height: 70px;
+}
+
+
+.task-row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.task-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    color: var(--taskflow-purple);
+    background: transparent;
+    border: 0;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.task-action-button:hover {
+    color: var(--taskflow-purple-dark);
+}
+
+.task-edit-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.task-edit-actions .primary-button {
+    min-width: 130px;
+    margin: 0;
+}
+
+.task-edit-actions .secondary-button {
+    min-width: 110px;
+}
+
+.secondary-button {
+    display: inline-flex;
+
+    min-width: 110px;
+    min-height: 44px;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 22px;
+
+    color: #333333;
+    background: #eeeeee;
+
+    border: 0;
+    border-radius: 999px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s,
+        transform 0.2s;
+}
+
+.secondary-button:hover {
+    background: #dddddd;
+    transform: translateY(-1px);
+}
+/* =========================================================
+   Task Date Groups
+   ========================================================= */
+
+.task-date-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 38px;
+}
+
+.task-date-section {
+    width: 100%;
+}
+
+.task-date-heading {
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 14px;
+}
+
+.task-date-heading h2 {
+    margin: 0;
+
+    color: var(--text-dark);
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.today-indicator {
+    display: inline-block;
+
+    padding: 5px 13px;
+    margin-bottom: 8px;
+
+    color: #ffffff;
+    background: var(--taskflow-purple);
+
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.task-date-count {
+    padding-bottom: 3px;
+
+    color: var(--text-muted);
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Today's group */
+
+.task-date-today {
+    padding: 18px;
+
+    background: #faf8ff;
+
+    border: 1px solid #eadcff;
+    border-radius: 20px;
+}
+
+.delete-action-button {
+    color: #dc3545;
+}
+
+.delete-action-button:hover {
+    color: #b02a37;
+}
+
+.delete-task-modal {
+    max-width: 440px;
+}
+
+.delete-task-modal .modal-content {
+    padding: 32px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid var(--border-colour);
+    border-radius: 18px;
+}
+
+.delete-task-icon {
+    margin-bottom: 15px;
+    color: #dc3545;
+    font-size: 42px;
+}
+
+.delete-task-modal h2 {
+    margin-bottom: 12px;
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.delete-task-modal p {
+    margin-bottom: 8px;
+}
+
+.delete-warning {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+.delete-task-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    margin-top: 25px;
+}
+
+.delete-task-actions .secondary-button,
+.delete-task-actions .delete-button {
+    min-width: 120px;
+    min-height: 44px;
+}
+
+.delete-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 22px;
+
+    color: #ffffff;
+    background: #dc3545;
+
+    border: 0;
+    border-radius: 999px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s,
+        transform 0.2s;
+}
+
+.delete-button:hover {
+    background: #b02a37;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   Mobile Task Cards
+   ========================================================= */
+
+
+/* Mobile */
+
+
+/* =========================================================
+   Task Search + Collapsible Filters
+   ========================================================= */
+
+.task-search-filter-form {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.task-search-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-search-box {
+    position: relative;
+    flex: 1;
+}
+
+.task-search-box i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+
+    color: var(--text-muted);
+    font-size: 18px;
+
+    transform: translateY(-50%);
+}
+
+.task-search-box input {
+    width: 100%;
+    min-height: 46px;
+
+    padding: 10px 16px 10px 43px;
+
+    background: #ffffff;
+    border: 1.5px solid var(--border-colour);
+    border-radius: 14px;
+
+    font-size: 15px;
+    outline: none;
+}
+
+.task-search-box input:focus {
+    border-color: var(--taskflow-purple);
+
+    box-shadow:
+        0 0 0 3px rgba(122, 52, 255, 0.12);
+}
+
+
+/* Funnel */
+
+.filter-toggle-button {
+    position: relative;
+
+    display: inline-flex;
+
+    width: 46px;
+    height: 46px;
+
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 46px;
+
+    color: var(--taskflow-purple);
+    background: #ffffff;
+
+    border: 1.5px solid var(--border-colour);
+    border-radius: 14px;
+
+    font-size: 21px;
+
+    cursor: pointer;
+}
+
+.filter-toggle-button:hover,
+.filter-toggle-button.has-filters {
+    color: #ffffff;
+    background: var(--taskflow-purple);
+    border-color: var(--taskflow-purple);
+}
+
+.filter-active-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+
+    width: 7px;
+    height: 7px;
+
+    background: #dc3545;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+}
+
+
+/* Filter panel */
+
+.task-filter-panel {
+    position: absolute;
+    top: 58px;
+    right: 0;
+    z-index: 500;
+
+    width: min(100%, 360px);
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border-colour);
+    border-radius: 16px;
+
+    box-shadow:
+        0 14px 35px rgba(0, 0, 0, 0.14);
+}
+
+.task-filter-panel[hidden] {
+    display: none;
+}
+
+.filter-section {
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+
+    border-bottom: 1px solid var(--border-colour);
+}
+
+.filter-section h3 {
+    margin: 0 0 12px;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+/* Checkboxes */
+
+.filter-checkbox {
+    display: flex;
+
+    align-items: center;
+    gap: 10px;
+
+    min-height: 36px;
+
+    margin-bottom: 5px;
+
+    cursor: pointer;
+}
+
+.filter-checkbox input {
+    width: 18px;
+    height: 18px;
+
+    accent-color: var(--taskflow-purple);
+
+    cursor: pointer;
+}
+
+.filter-checkbox span {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* Priority text */
+
+.priority-filter-high {
+    color: #b4232c;
+}
+
+.priority-filter-medium {
+    color: #9b6a00;
+}
+
+.priority-filter-low {
+    color: #277644;
+}
+
+
+/* Due date */
+
+.filter-date-input {
+    width: 100%;
+    min-height: 42px;
+
+    padding: 8px 11px;
+
+    background: #ffffff;
+
+    border: 1.5px solid var(--border-colour);
+    border-radius: 10px;
+
+    outline: none;
+}
+
+.filter-date-input:focus {
+    border-color: var(--taskflow-purple);
+}
+
+
+/* Buttons */
+
+.filter-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+}
+
+.filter-apply-button,
+.clear-filter-button {
+    display: inline-flex;
+
+    min-height: 40px;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px 16px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.filter-apply-button {
+    color: #ffffff;
+    background: var(--taskflow-purple);
+
+    border: 0;
+}
+
+.filter-apply-button:hover {
+    background: var(--taskflow-purple-dark);
+}
+
+.clear-filter-button {
+    color: var(--text-dark);
+
+    background: var(--surface-background);
+
+    border: 0;
+}
+
+.clear-filter-button:hover {
+    color: var(--taskflow-purple);
+}
+
+
+/* =========================================================
+   Task History
+   ========================================================= */
+
+.history-page {
+    padding-bottom: 40px;
+}
+
+
+.history-task-circle {
+    cursor: default;
+}
+
+.history-task-circle:hover {
+    transform: none;
+}
+
+.history-details-action {
+    color: var(--taskflow-purple);
+}
+
+.history-details-action:hover {
+    color: var(--taskflow-purple-dark);
+}
+
+.history-empty-state h3 {
+    margin: 12px 0 0;
+}
+
+.history-page .task-card-on-going,
+.history-page .task-card-yet-to-do {
+    border-color: #e3a324;
+}
+
+/* Completed/dropped cards are read-only on the current list,
+   but History must still expose View/Review and priority. */
+.history-page .task-card-completed .task-card-action,
+.history-page .task-card-dropped .task-card-action,
+.history-page .task-card-dropped .priority-badge {
+    visibility: visible;
+}
+
+.task-details-status.status-incomplete {
+    color: #9b6a00;
+    background: #fff3cd;
+}
+
+.task-details-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+/* =========================================================
+   Task History Search
+   ========================================================= */
+
+.history-search-form {
+    margin-bottom: 30px;
+}
+
+.history-search-form .task-search-box {
+    max-width: 620px;
+}
+
+.history-search-clear {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    display: flex;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    border-radius: 50%;
+    text-decoration: none;
+    transform: translateY(-50%);
+}
+
+.history-search-clear:hover {
+    color: var(--taskflow-purple);
+    background: #f0e9ff;
+}
+
+.history-search-form .task-search-box input {
+    padding-right: 46px;
+}
+
+
+/* =========================================================
+   Notifications
+   ========================================================= */
+
+/* =========================================================
+   Sidebar Notifications
+   ========================================================= */
+
+.notification-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.notification-nav-button {
+    width: 100%;
+    padding: 8px 0;
+
+    color: var(--text-dark);
+    background: transparent;
+
+    border: 0;
+
+    text-align: left;
+    cursor: pointer;
+}
+
+.notification-nav-button:hover {
+    color: var(--taskflow-purple);
+}
+
+.notification-icon-wrap {
+    position: relative;
+
+    display: inline-flex;
+
+    width: 26px;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-icon-wrap > i {
+    font-size: 27px;
+}
+
+.notification-button {
+    position: relative;
+
+    display: flex;
+
+    width: 44px;
+    height: 44px;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: #555;
+    background: transparent;
+
+    border: 0;
+    border-radius: 50%;
+
+    font-size: 21px;
+
+    cursor: pointer;
+}
+
+.notification-button:hover {
+    color: var(--taskflow-purple);
+    background: #f1ebff;
+}
+
+
+/* Counter */
+
+.notification-counter {
+    position: absolute;
+
+    top: -7px;
+    right: -9px;
+
+    display: inline-flex;
+
+    min-width: 18px;
+    height: 18px;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 4px;
+
+    color: #ffffff;
+    background: #dc3545;
+
+    border: 2px solid var(--sidebar-background);
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+/* Dropdown */
+
+.notification-panel {
+    position: absolute;
+
+    top: 52px;
+    left: 0;
+    z-index: 1000;
+
+    width: 390px;
+    max-height: 480px;
+
+    overflow-y: auto;
+
+    background: #fff;
+
+    border: 1px solid #e2e2e2;
+    border-radius: 16px;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.16);
+}
+
+.notification-panel[hidden] {
+    display: none;
+}
+
+
+/* Header */
+
+.notification-header {
+    padding: 18px 20px 14px;
+
+    border-bottom: 1px solid #eee;
+}
+
+.notification-header h3 {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.notification-header span {
+    color: #777;
+
+    font-size: 12px;
+}
+
+
+/* Summary */
+
+.notification-summary {
+    display: flex;
+    gap: 7px;
+
+    padding: 12px 16px;
+
+    border-bottom: 1px solid #eee;
+}
+
+.notification-summary span {
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   Overdue Task
+   ========================================================= */
+
+.task-overdue-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 12px;
+
+    color: #ffffff;
+    background: #dc3545;
+
+    border: 1px solid #b02a37;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.task-card-due-date.is-overdue span,
+.task-card-due-date.is-overdue strong {
+    color: #dc3545;
+}
+
+.task-card-due-date.is-overdue strong {
+    font-weight: 800;
+     font-size: 16px;
+}
+
+.notification-summary-overdue {
+    color: #b4232c;
+    background: #ffe2e2;
+}
+
+.notification-summary-today {
+    color: #9b6a00;
+    background: #fff3cd;
+}
+
+.notification-summary-upcoming {
+    color: #6426e6;
+    background: #eee7ff;
+}
+
+
+/* Notification item */
+
+.notification-item {
+    display: grid;
+
+    grid-template-columns:
+        38px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px 16px;
+
+    border-bottom: 1px solid #eee;
+}
+
+.notification-item:last-child {
+    border-bottom: 0;
+}
+
+.notification-icon {
+    display: flex;
+
+    width: 36px;
+    height: 36px;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 17px;
+}
+
+.notification-overdue .notification-icon {
+    color: #dc3545;
+    background: #ffe2e2;
+}
+
+.notification-today .notification-icon {
+    color: #e3a324;
+    background: #fff3cd;
+}
+
+.notification-upcoming .notification-icon {
+    color: #7a34ff;
+    background: #eee7ff;
+}
+
+
+/* Text */
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+}
+
+.notification-content strong {
+    overflow: hidden;
+
+    font-size: 13px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notification-content span {
+    color: #777;
+
+    font-size: 11px;
+}
+
+
+/* Badge */
+
+.notification-badge {
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.notification-badge-overdue {
+    color: #b4232c;
+    background: #ffe2e2;
+}
+
+.notification-badge-today {
+    color: #9b6a00;
+    background: #fff3cd;
+}
+
+.notification-badge-upcoming {
+    color: #6426e6;
+    background: #eee7ff;
+}
+
+
+/* Empty */
+
+.notification-empty {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    padding: 35px 20px;
+
+    color: #777;
+
+    text-align: center;
+}
+
+.notification-empty i {
+    margin-bottom: 8px;
+
+    color: #42b51f;
+
+    font-size: 30px;
+}
+
+.notification-empty strong {
+    color: #333;
+}
+
+.overdue-badge {
+    display: inline-flex;
+
+    padding: 4px 8px;
+
+    color: #b4232c;
+    background: #ffe2e2;
+
+    border-radius: 7px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   Review Modal
+   ========================================================= */
+
+.task-review-modal .modal-header > div {
+    min-width: 0;
+}
+
+.task-review-modal .modal-header p {
+    margin: 4px 0 0;
+
+    overflow: hidden;
+
+    color: var(--text-muted);
+
+    font-size: 14px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task-review-modal .form-field {
+    margin-bottom: 22px;
+}
+
+.task-review-modal .form-field:last-child {
+    margin-bottom: 0;
+}
+
+.task-review-modal .form-field small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* =========================================================
+   Notification Mobile Layout
+   ========================================================= */
+
+
+/* =========================================================
+   Tablet Dashboard
+   ========================================================= */
+
+
+/* =========================================================
+   Small Phone Profile
+   320px - 390px
+   ========================================================= */
+
+
+/* =========================================================
+   Extra Small Phone Task Cards
+   320px - 340px
+
+   Used by:
+   - Dashboard task cards
+   - Task List cards
+   - History cards
+
+   Goal:
+   Show useful task information instead of cutting text
+   into "Tas..."
+   ========================================================= */
+
+
+/* =========================================================
+   Extra Small Phone Modal Buttons
+   320px - 340px
+   ========================================================= */
+
+
+/* =========================================================
+   Desktop Modal Buttons
+   ========================================================= */
+
+
+/* =========================================================
+   Tablet + Small Screen Task Cards
+   341px - 1100px
+
+   Prevent long task titles/descriptions from being cut off
+   on 1024px laptops/tablets and smaller screens.
+   ========================================================= */
+
+
+/* =========================================================
+   Responsive Layout
+   Consolidated breakpoints
+
+   Base styles: 1101px and wider
+   Tablet / small desktop: 768px - 1100px
+   Mobile: 341px - 767px
+   Small phone: up to 390px
+   Extra-small phone: up to 340px
+   ========================================================= */
+
+/* =========================================================
+   Desktop + Tablet shared behaviour
+   768px and wider
+   ========================================================= */
+
+@media (min-width: 768px) {
+    /* Keep the dashboard inside the viewport while allowing
+       only the task list to scroll. */
+    .dashboard {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 78px);
+        max-height: calc(100vh - 78px);
+        overflow: hidden;
+    }
+
+    .dashboard-header,
+    .status-grid,
+    .dashboard-progress {
+        flex-shrink: 0;
+    }
+
+    .today-section {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .dashboard-section-heading {
+        flex-shrink: 0;
+    }
+
+    .today-section .task-card-list {
+        flex: 1;
+        min-height: 0;
+        padding-right: 8px;
+        padding-bottom: 10px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /* A task card should never be compressed just to fit
+       more cards into the dashboard viewport. */
+    .today-section .task-card {
+        flex-shrink: 0;
+    }
+
+    /* Compact, consistent desktop modal actions. */
+    .task-modal .modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 16px 24px 22px;
+    }
+
+    .task-modal .primary-button,
+    .task-modal .secondary-button,
+    .task-edit-actions .primary-button,
+    .task-edit-actions .secondary-button {
+        width: auto;
+        min-width: 120px;
+        min-height: 42px;
+        padding: 9px 20px;
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .task-modal .primary-button,
+    .task-modal .secondary-button {
+        border-radius: 999px;
+    }
+
+    .task-edit-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+    }
+}
+
+/* =========================================================
+   Tablet / Small Desktop
+   768px - 1100px
+   ========================================================= */
+
+@media (min-width: 768px) and (max-width: 1100px) {
+
+    .profile-forms {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 20px;
+    }
+
+    .profile-panel {
+        min-width: 0;
+        padding: 24px 20px;
+    }
+
+    .profile-panel .primary-button {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+
+        padding: 10px 14px;
+        margin: 28px 0 0;
+
+        font-size: 15px;
+        line-height: 1.2;
+
+        white-space: normal;
+    }
+
+    .status-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .status-card {
+        min-width: 0;
+    }
+
+    /* Long task content gets a stacked card instead of being
+       squeezed by due-date and priority columns. */
+    .task-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "status priority"
+            "main main"
+            "due actions";
+        align-items: start;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 135px;
+        padding: 18px 20px;
+        gap: 14px 16px;
+        border-radius: 22px;
+    }
+
+    .task-card-status {
+        grid-area: status;
+        align-self: center;
+        min-width: 0;
+        font-size: 15px;
+    }
+
+    .task-card .priority-badge {
+        grid-area: priority;
+        align-self: center;
+        justify-self: end;
+        min-width: 90px;
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .task-card-main {
+        grid-area: main;
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        min-width: 0;
+        gap: 10px;
+    }
+
+    .task-card-information {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .task-title-button {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow: visible;
+        font-size: 17px;
+        line-height: 1.3;
+        text-overflow: clip;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .task-card-information p {
+        display: block;
+        width: 100%;
+        margin: 6px 0 0;
+        overflow: visible;
+        font-size: 13px;
+        line-height: 1.4;
+        text-overflow: clip;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .task-card-due-date {
+        position: static;
+        grid-area: due;
+        align-self: center;
+        justify-self: start;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+        transform: none;
+        text-align: left;
+    }
+
+    .task-card-due-date span,
+    .task-card-due-date strong {
+        font-size: 12px;
+        white-space: normal;
+    }
+
+    .task-card-due-date.is-overdue strong {
+        font-size: 12px;
+    }
+
+    .task-card-actions {
+        grid-area: actions;
+        align-self: center;
+        justify-self: end;
+        gap: 8px;
+    }
+
+    .task-card-action {
+        width: 34px;
+        height: 34px;
+        font-size: 21px;
+    }
+}
+
+/* =========================================================
+   Mobile
+   341px - 767px (plus shared mobile shell below 768px)
+   ========================================================= */
+
+@media (max-width: 767px) {
+    /* Authentication */
+    .auth-main {
+        padding: 24px 20px;
+    }
+
+    .auth-card {
+        padding: 42px 38px 32px;
+        border-radius: 42px;
+    }
+
+    .auth-card h1 {
+        font-size: 34px;
+    }
+
+    /* Application shell */
+    .mobile-header {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 1040;
+        display: flex;
+        height: 72px;
+        align-items: center;
+        gap: 22px;
+        padding: 0 18px;
+        background: #ffffff;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .menu-button {
+        padding: 0;
+        color: #111111;
+        background: transparent;
+        border: 0;
+        font-size: 38px;
+        line-height: 1;
+    }
+
+    .mobile-logo {
+        font-size: 30px;
+    }
+
+    .sidebar {
+        top: 72px;
+        width: min(100%, 360px);
+        padding-top: 20px;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-logo {
+        display: none;
+    }
+
+    .sidebar-navigation {
+        margin-top: 0;
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        inset: 72px 0 0;
+        z-index: 900;
+        display: block;
+        visibility: hidden;
+        background: rgba(0, 0, 0, 0.35);
+        opacity: 0;
+        transition: opacity 0.25s, visibility 0.25s;
+    }
+
+    .sidebar-overlay.open {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .app-main {
+        margin-left: 0;
+        padding: 105px 16px 40px;
+    }
+
+    /* Dashboard */
+    .dashboard-header {
+        display: block;
+        margin-bottom: 27px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 36px;
+    }
+
+    .create-task-button {
+        width: 100%;
+        margin: 28px 0 0;
+    }
+
+    .status-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .status-card {
+        min-width: 0;
+        min-height: 105px;
+        padding: 16px 8px;
+    }
+
+    .status-card h2 {
+        font-size: 19px;
+    }
+
+    /* Task pages */
+    .task-page-header {
+        display: block;
+    }
+
+    .task-page-header .primary-button {
+        width: 100%;
+        margin-top: 22px;
+    }
+
+    .task-row {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .task-row time,
+    .task-row .priority-badge,
+    .task-row .status-label {
+        width: fit-content;
+        margin-left: 35px;
+    }
+
+    .task-row-actions {
+        width: fit-content;
+        margin-left: 35px;
+    }
+
+    /* Readable mobile task cards: content wraps instead of
+       degrading to short ellipses. */
+    .task-card-list {
+        gap: 14px;
+    }
+
+    .task-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "status priority"
+            "main main"
+            "due actions";
+        align-items: start;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        min-height: 135px;
+        padding: 16px 18px;
+        gap: 13px 12px;
+        border-radius: 22px;
+    }
+
+    .task-card-status {
+        grid-area: status;
+        align-self: center;
+        justify-self: start;
+        min-width: 0;
+        font-size: 15px;
+        line-height: 1.2;
+    }
+
+    .task-card .priority-badge {
+        grid-area: priority;
+        align-self: center;
+        justify-self: end;
+        min-width: 84px;
+        padding: 5px 9px;
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .task-card-main {
+        grid-area: main;
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        min-width: 0;
+        gap: 10px;
+    }
+
+    .task-card-information {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .task-title-button {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        overflow: visible;
+        font-size: 17px;
+        line-height: 1.3;
+        text-overflow: clip;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .task-card-information p {
+        display: block;
+        width: 100%;
+        margin: 6px 0 0;
+        overflow: visible;
+        font-size: 13px;
+        line-height: 1.4;
+        text-overflow: clip;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .task-check-circle {
+        width: 28px;
+        height: 28px;
+        flex: 0 0 28px;
+        font-size: 17px;
+    }
+
+    .task-card-due-date {
+        position: static;
+        grid-area: due;
+        align-self: center;
+        justify-self: start;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        margin: 0;
+        transform: none;
+        text-align: left;
+    }
+
+    .task-card-due-date span,
+    .task-card-due-date strong {
+        font-size: 12px;
+        white-space: normal;
+    }
+
+    .task-card-due-date.is-overdue strong {
+        font-size: 12px;
+    }
+
+    .task-card-actions {
+        grid-area: actions;
+        align-self: center;
+        justify-self: end;
+        gap: 6px;
+    }
+
+    .task-card-action {
+        width: 34px;
+        height: 34px;
+        font-size: 21px;
+    }
+
+    /* Date groups */
+    .task-date-groups {
+        gap: 26px;
+    }
+
+    .task-date-today {
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    .task-date-heading {
+        align-items: flex-start;
+    }
+
+    .task-date-heading h2 {
+        font-size: 18px;
+    }
+
+    .task-date-count {
+        font-size: 12px;
+    }
+
+    /* Profile */
+    .profile-heading {
+        justify-content: flex-start;
+        gap: 18px;
+        margin: 25px 0 30px;
+    }
+
+    .profile-heading h1 {
+        font-size: 38px;
+    }
+
+    .profile-icon {
+        font-size: 70px;
+    }
+
+    .profile-forms {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-panel {
+        padding: 24px 20px;
+    }
+
+    /* Search / filters */
+    .task-search-toolbar {
+        gap: 8px;
+    }
+
+    .task-filter-panel {
+        position: static;
+        width: 100%;
+        margin-top: 10px;
+        box-shadow: none;
+    }
+
+    .filter-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .filter-apply-button,
+    .clear-filter-button {
+        width: 100%;
+    }
+
+    .history-search-form .task-search-box {
+        max-width: none;
+    }
+
+    /* Modals */
+    .task-modal,
+    .task-details-modal {
+        width: calc(100% - 24px);
+        max-width: none;
+        margin: 12px auto;
+    }
+
+    .task-modal .modal-header {
+        padding: 20px 20px 15px;
+    }
+
+    .task-modal .modal-body {
+        padding: 20px;
+    }
+
+    .task-details-modal .modal-content {
+        padding: 22px 20px 28px;
+        border-radius: 18px;
+    }
+
+    .task-modal .modal-footer,
+    .task-edit-actions,
+    .delete-task-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .task-modal .modal-footer {
+        padding: 16px 20px 20px;
+    }
+
+    .task-edit-actions {
+        margin-top: 22px;
+    }
+
+    .delete-task-actions {
+        margin-top: 25px;
+    }
+
+    .task-modal .primary-button,
+    .task-modal .secondary-button,
+    .task-edit-actions .primary-button,
+    .task-edit-actions .secondary-button,
+    .delete-task-actions .secondary-button,
+    .delete-task-actions .delete-button {
+        width: 100%;
+        min-width: 0;
+        min-height: 40px;
+        padding: 8px 12px;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    /* Notifications */
+    .notification-panel {
+        position: fixed;
+        top: 80px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-height: calc(100vh - 96px);
+    }
+
+    .notification-item {
+        grid-template-columns: 36px minmax(0, 1fr);
+    }
+
+    .notification-badge {
+        grid-column: 2;
+        justify-self: start;
+    }
+}
+
+/* =========================================================
+   Small Phone
+   Up to 390px
+   ========================================================= */
+
+@media (max-width: 390px) {
+    .profile-page {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .profile-heading {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 52px;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        max-width: 100%;
+        margin: 20px 0 26px;
+    }
+
+    .profile-heading > div {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .profile-heading h1 {
+        margin: 0 0 6px;
+        font-size: 28px;
+        line-height: 1.15;
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+    .profile-heading p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.45;
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+    .profile-icon {
+        display: flex;
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        align-items: center;
+        justify-content: center;
+        justify-self: end;
+        overflow: visible;
+        color: var(--taskflow-purple);
+        font-size: 42px;
+        line-height: 1;
+    }
+
+    .profile-stats,
+    .profile-forms,
+    .profile-panel {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .profile-panel {
+        min-width: 0;
+        padding: 20px 16px;
+    }
+
+    /* Slightly tighter cards without hiding content. */
+    .task-card {
+        padding: 14px;
+        gap: 12px 10px;
+        border-radius: 18px;
+    }
+
+    .task-card-status {
+        font-size: 13px;
+    }
+
+    .task-overdue-status {
+        padding: 4px 7px;
+        font-size: 10px;
+    }
+
+    .task-card .priority-badge {
+        min-width: 72px;
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .task-title-button {
+        font-size: 16px;
+    }
+
+    .task-card-information p {
+        font-size: 12px;
+    }
+
+    .task-card-due-date span,
+    .task-card-due-date strong,
+    .task-card-due-date.is-overdue strong {
+        font-size: 11px;
+    }
+
+    .task-card-action {
+        width: 32px;
+        height: 32px;
+        font-size: 19px;
+    }
+}
+
+/* =========================================================
+   Extra-Small Phone
+   Up to 340px
+   ========================================================= */
+
+@media (max-width: 340px) {
+    .app-main {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .auth-main {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .auth-card {
+        padding: 34px 24px 28px;
+    }
+
+    /* Give due date and actions their own rows so the card
+       never feels crowded at 320px. */
+    .task-card {
+        grid-template-areas:
+            "status priority"
+            "main main"
+            "due due"
+            "actions actions";
+        min-height: 0;
+    }
+
+    .task-card-due-date {
+        width: 100%;
+    }
+
+    .task-card-actions {
+        width: 100%;
+        justify-self: stretch;
+        justify-content: flex-end;
+    }
+
+    .task-date-groups {
+        gap: 22px;
+    }
+
+    .task-date-today {
+        padding: 8px;
+        border-radius: 14px;
+    }
+
+    .task-date-heading {
+        gap: 8px;
+    }
+
+    .task-date-heading h2 {
+        font-size: 16px;
+        line-height: 1.25;
+    }
+
+    .task-date-count {
+        font-size: 10px;
+    }
+
+    .dashboard-section-heading {
+        gap: 8px;
+    }
+
+    .dashboard-section-heading h2 {
+        font-size: 20px;
+    }
+
+    .dashboard-section-heading a {
+        font-size: 12px;
+    }
+
+    .task-modal .modal-footer,
+    .task-edit-actions,
+    .delete-task-actions {
+        gap: 8px;
+    }
+
+    .task-modal .modal-footer {
+        padding: 12px 14px 16px;
+    }
+
+    .task-modal .primary-button,
+    .task-modal .secondary-button,
+    .task-edit-actions .primary-button,
+    .task-edit-actions .secondary-button,
+    .delete-task-actions .secondary-button,
+    .delete-task-actions .delete-button {
+        min-height: 38px;
+        padding: 8px 8px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+}

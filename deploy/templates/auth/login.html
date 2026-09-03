@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Log In | TaskFlow{% endblock %}
+
+{% block content %}
+<section class="auth-card login-card">
+    <h1>Log In</h1>
+
+    <form method="POST">
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ csrf_token() }}"
+        >
+
+        <div class="form-field">
+            <label for="email">Email</label>
+            <input
+                id="email"
+                type="email"
+                name="email"
+                value="{{ request.form.get('email', '') }}"
+                autocomplete="email"
+                required
+            >
+        </div>
+
+        <div class="form-field">
+            <label for="password">Password</label>
+            <input
+                id="password"
+                type="password"
+                name="password"
+                autocomplete="current-password"
+                required
+            >
+        </div>
+
+        <button class="primary-button" type="submit">
+            Log In
+        </button>
+    </form>
+
+    <p class="auth-link">
+        No account yet?
+        <a href="{{ url_for('auth.register') }}">Click Here</a>
+    </p>
+</section>
+{% endblock %}
